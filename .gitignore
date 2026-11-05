@@ -19,9 +19,9 @@ dist/
 htmlcov/
 
 # data and run artifacts (versioned separately, never in git)
-data/
-runs/
-logs/
+/data/
+/runs/
+/logs/
 *.parquet
 *.duckdb
 *.sqlite

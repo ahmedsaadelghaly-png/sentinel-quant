@@ -5,6 +5,7 @@ from sentinel_quant.config.schema import (
     AppConfig,
     BinaryControls,
     DailyControls,
+    DataConfig,
     ExchangeConfig,
     TradingMode,
 )
@@ -15,6 +16,7 @@ __all__ = [
     "BinaryControls",
     "ConfigError",
     "DailyControls",
+    "DataConfig",
     "ExchangeConfig",
     "Secrets",
     "TradingMode",

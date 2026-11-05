@@ -8,6 +8,15 @@ exchange:
   symbols: ["BTC/USDT", "ETH/USDT"]
   timeframe: 1h
 
+data:                          # public mainnet market data, no credentials needed
+  history_start: "2021-01-01"  # first bar requested by `data download`
+  page_limit: 1000             # bars per request
+  max_retries: 5               # per request, exponential backoff
+  backoff_base_seconds: 1
+  backoff_max_seconds: 60
+  close_grace_seconds: 2       # a bar counts as closed this long after its close time
+  poll_retry_seconds: 10       # live poller re-check interval when a bar is late
+
 daily_controls:
   risk_per_trade_pct: 0.5      # % of equity lost if the stop is hit
   max_daily_loss_pct: 2.0      # hard daily stop, includes open-position stops

@@ -86,3 +86,15 @@ def test_cli_bad_config(tmp_path: Path) -> None:
     p = tmp_path / "bad.yaml"
     p.write_text("mode: live\n")
     assert main(["check-config", "--config", str(p)]) == 1
+
+
+def test_data_defaults_are_loaded() -> None:
+    cfg = load_config(ROOT / "configs/default.yaml")
+    assert cfg.data.page_limit == 1000
+    assert cfg.data.close_grace_seconds == 2
+
+
+@pytest.mark.parametrize("timeframe", ["7h", "1w", "1M", ""])
+def test_unsupported_timeframe_is_rejected(timeframe: str) -> None:
+    with pytest.raises(ValidationError, match="timeframe"):
+        ExchangeConfig(timeframe=timeframe)

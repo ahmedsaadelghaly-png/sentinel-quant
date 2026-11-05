@@ -6,11 +6,13 @@ combinations fail at startup, never mid-trading.
 
 from __future__ import annotations
 
-from datetime import time
+from datetime import date, time
 from enum import StrEnum
 from typing import Self
 
-from pydantic import BaseModel, ConfigDict, Field, model_validator
+from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
+
+from sentinel_quant.data.timeframes import TIMEFRAME_MS
 
 
 class TradingMode(StrEnum):
@@ -63,6 +65,29 @@ class ExchangeConfig(_Strict):
     symbols: tuple[str, ...] = ("BTC/USDT", "ETH/USDT")
     timeframe: str = "1h"
 
+    @field_validator("timeframe")
+    @classmethod
+    def _known_timeframe(cls, value: str) -> str:
+        if value not in TIMEFRAME_MS:
+            raise ValueError(f"timeframe must be one of {sorted(TIMEFRAME_MS)}")
+        return value
+
+
+class DataConfig(_Strict):
+    """Market data settings. Data always comes from public mainnet endpoints.
+
+    ``exchange.testnet`` governs order routing only: testnet candles are not a
+    usable research history, and public endpoints need no credentials.
+    """
+
+    history_start: date = date(2021, 1, 1)
+    page_limit: int = Field(1000, ge=1, le=1000)
+    max_retries: int = Field(5, ge=0, le=20)
+    backoff_base_seconds: float = Field(1.0, gt=0, le=60)
+    backoff_max_seconds: float = Field(60.0, gt=0, le=600)
+    close_grace_seconds: float = Field(2.0, ge=0, le=60)
+    poll_retry_seconds: float = Field(10.0, gt=0, le=300)
+
 
 class AlertsConfig(_Strict):
     telegram_enabled: bool = False
@@ -95,6 +120,7 @@ class AppConfig(_Strict):
     mode: TradingMode = TradingMode.SIM
     live_trading_approved: bool = False
     exchange: ExchangeConfig = ExchangeConfig()
+    data: DataConfig = DataConfig()
     daily_controls: DailyControls = DailyControls()
     alerts: AlertsConfig = AlertsConfig()
     binary: BinaryControls = BinaryControls()
