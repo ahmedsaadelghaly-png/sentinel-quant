@@ -1,0 +1,206 @@
+id,name,entity_type,scope,category,subcategory,markets,style,timeframe,min_data,features,long_support,short_support,complexity,automation,cost_sensitivity,evidence,sharia_status,backtest_status,priority_score,refs,cross_refs,aliases,notes
+A-001,Moving Average Crossover,STRATEGY,CORE,A,Trend Following & Momentum,US_STOCKS;SPOT_CRYPTO,TREND,SWING,OHLCV_DAILY,,Y,MARGIN_REQUIRED,,,,,,NOT_STARTED,,,A-EMA trend,SMA 50/200 golden/death cross; dual MA,SMA 50/200 merged here as a parameterization
+A-002,Price-vs-EMA Trend Following,STRATEGY,CORE,A,Trend Following & Momentum,US_STOCKS;SPOT_CRYPTO,TREND,SWING,OHLCV_DAILY,,Y,MARGIN_REQUIRED,,,,,,NOT_STARTED,,,M-Volatility Targeting,EMA trend filter; price above/below MA,
+A-003,MACD Momentum,STRATEGY,CORE,A,Trend Following & Momentum,US_STOCKS;SPOT_CRYPTO,TREND,SWING,OHLCV_DAILY,,Y,MARGIN_REQUIRED,,,,,,NOT_STARTED,,,,MACD signal-line cross,
+A-004,RSI Momentum,STRATEGY,CORE,A,Trend Following & Momentum,US_STOCKS;SPOT_CRYPTO,TREND,SWING,OHLCV_DAILY,,Y,MARGIN_REQUIRED,,,,,,NOT_STARTED,,,B-RSI Overbought/Oversold,RSI > 50/60 trend mode,"Opposite use of RSI to B; keep both, test separately"
+A-005,Donchian Channel Breakout,STRATEGY,CORE,A,Trend Following & Momentum,US_STOCKS;SPOT_CRYPTO,BREAKOUT,SWING,OHLCV_DAILY,,Y,MARGIN_REQUIRED,,,,,,NOT_STARTED,,,A-Turtle; C-Failed Breakout,N-bar high/low breakout; breakout trading,Generic 'breakout trading' merged here
+A-006,Turtle Trading System,STRATEGY,CORE,A,Trend Following & Momentum,US_STOCKS;SPOT_CRYPTO,BREAKOUT,POSITION,OHLCV_DAILY,,Y,MARGIN_REQUIRED,,,,,,NOT_STARTED,,,A-Donchian; M-Fixed Fractional,Turtle rules,Full system: Donchian entries + ATR (N) sizing + pyramiding
+A-007,Time-Series Momentum,STRATEGY,CORE,A,Trend Following & Momentum,US_STOCKS;SPOT_CRYPTO,TREND,POSITION,OHLCV_DAILY,,Y,MARGIN_REQUIRED,,,,,,NOT_STARTED,,,A-Momentum Rotation,TSMOM; absolute momentum,
+A-008,Cross-Sectional Momentum,STRATEGY,CORE,A,Trend Following & Momentum,US_STOCKS;SPOT_CRYPTO,TREND,POSITION,OHLCV_DAILY,,Y,MARGIN_REQUIRED,,,,,,NOT_STARTED,,,F-Residual Momentum; F-Multi-Factor,Momentum factor; relative strength; 12-1 momentum,Canonical home for momentum factor (F) and relative strength
+A-009,Rate of Change (ROC),FEATURE,CORE,A,Trend Following & Momentum,US_STOCKS;SPOT_CRYPTO,,,OHLCV_DAILY,,,,,,,,,,,,A-TSMOM,Momentum oscillator,Indicator; TSMOM is the strategy form
+A-010,ADX Trend Following,STRATEGY,CORE,A,Trend Following & Momentum,US_STOCKS;SPOT_CRYPTO,TREND,SWING,OHLCV_DAILY,,Y,MARGIN_REQUIRED,,,,,,NOT_STARTED,,,F-Regime Switching,DMI/ADX,ADX also reusable as a regime FILTER
+A-011,Parabolic SAR,STRATEGY,CORE,A,Trend Following & Momentum,US_STOCKS;SPOT_CRYPTO,TREND,SWING,OHLCV_DAILY,,Y,MARGIN_REQUIRED,,,,,,NOT_STARTED,,,M-Trailing Stop,PSAR stop-and-reverse,
+A-012,Supertrend,STRATEGY,CORE,A,Trend Following & Momentum,US_STOCKS;SPOT_CRYPTO,TREND,SWING,OHLCV_DAILY,,Y,MARGIN_REQUIRED,,,,,,NOT_STARTED,,,H-ATR,ATR trailing band,
+A-013,Momentum Rotation (Dual Momentum),STRATEGY,CORE,A,Trend Following & Momentum,US_STOCKS;SPOT_CRYPTO,TREND,POSITION,OHLCV_DAILY,,Y,N,,,,,,NOT_STARTED,,,A-TSMOM; A-XSMOM; G-Sector Rotation,Dual momentum; ETF/asset rotation,Long-only by construction
+A-014,52-Week High Momentum,STRATEGY,CORE,A,Trend Following & Momentum,US_STOCKS;SPOT_CRYPTO,TREND,POSITION,OHLCV_DAILY,,Y,MARGIN_REQUIRED,,,,,,NOT_STARTED,,,A-XSMOM,Nearness to 52-week high,"ADDED: discovered, not in input list"
+B-001,RSI Overbought/Oversold,STRATEGY,CORE,B,Mean Reversion,US_STOCKS;SPOT_CRYPTO,REVERSION,SWING,OHLCV_DAILY,,Y,MARGIN_REQUIRED,,,,,,NOT_STARTED,,,A-RSI Momentum,RSI(2) reversion; Connors RSI,
+B-002,Bollinger Band Reversion,STRATEGY,CORE,B,Mean Reversion,US_STOCKS;SPOT_CRYPTO,REVERSION,SWING,OHLCV_DAILY,,Y,MARGIN_REQUIRED,,,,,,NOT_STARTED,,,H-Bollinger Squeeze,BB fade,Squeeze (H) is the breakout use of the same bands
+B-003,Moving Average Reversion,STRATEGY,CORE,B,Mean Reversion,US_STOCKS;SPOT_CRYPTO,REVERSION,SWING,OHLCV_DAILY,,Y,MARGIN_REQUIRED,,,,,,NOT_STARTED,,,B-Z-Score,Distance-from-MA fade,
+B-004,VWAP Reversion,STRATEGY,CORE,B,Mean Reversion,US_STOCKS;SPOT_CRYPTO,REVERSION,INTRADAY,OHLCV_INTRADAY,,Y,MARGIN_REQUIRED,,,,,,NOT_STARTED,,,E-VWAP; L-VWAP Execution,Fade deviation from session VWAP,Distinct from VWAP feature (E) and VWAP execution (L)
+B-005,Z-Score Mean Reversion,STRATEGY,CORE,B,Mean Reversion,US_STOCKS;SPOT_CRYPTO,REVERSION,SWING,OHLCV_DAILY,,Y,MARGIN_REQUIRED,,,,,,NOT_STARTED,,,B-OU Model,Statistical mean reversion; Bollinger z,'Statistical mean reversion' merged here
+B-006,Pairs Trading (Distance Method),STRATEGY,CORE,B,Mean Reversion,US_STOCKS;SPOT_CRYPTO,STAT_ARB,SWING,OHLCV_DAILY,,Y,MARGIN_REQUIRED,,,,,,NOT_STARTED,,,F-Statistical Arbitrage; I-Arbitrage,Distance pairs,"Canonical home for pairs (also listed in F, I)"
+B-007,Cointegration Pairs Trading,STRATEGY,CORE,B,Mean Reversion,US_STOCKS;SPOT_CRYPTO,STAT_ARB,SWING,OHLCV_DAILY,,Y,MARGIN_REQUIRED,,,,,,NOT_STARTED,,,B-Pairs; F-Kalman Filter,Engle-Granger / Johansen pairs,Canonical home for cointegration (also listed in F)
+B-008,Ornstein-Uhlenbeck Spread Model,MODEL,CORE,B,Mean Reversion,US_STOCKS;SPOT_CRYPTO,,,OHLCV_DAILY,,,,,,,,,,,,B-Cointegration Pairs,OU process; half-life estimation,"Model for spread dynamics, not a standalone strategy"
+B-009,RSI Divergence,FILTER,CORE,B,Mean Reversion,US_STOCKS;SPOT_CRYPTO,,,OHLCV_DAILY,,,,,,,,,,,,D-SMT Divergence; E-Delta Divergence,Bullish/bearish divergence,Depends on swing-point detection (look-ahead risk)
+B-010,CCI Reversion,STRATEGY,CORE,B,Mean Reversion,US_STOCKS;SPOT_CRYPTO,REVERSION,SWING,OHLCV_DAILY,,Y,MARGIN_REQUIRED,,,,,,NOT_STARTED,,,,Commodity Channel Index fade,
+B-011,Keltner Channel Reversion,STRATEGY,CORE,B,Mean Reversion,US_STOCKS;SPOT_CRYPTO,REVERSION,SWING,OHLCV_DAILY,,Y,MARGIN_REQUIRED,,,,,,NOT_STARTED,,,H-ATR,Keltner fade,
+B-012,Adaptive Mean Reversion,STRATEGY,CORE,B,Mean Reversion,US_STOCKS;SPOT_CRYPTO,REVERSION,SWING,OHLCV_DAILY,,Y,MARGIN_REQUIRED,,,,,,NOT_STARTED,,,F-Regime Switching,Volatility-adjusted bands; regime-gated MR,Needs precise definition in profile phase
+B-013,Short-Term Reversal,STRATEGY,CORE,B,Mean Reversion,US_STOCKS;SPOT_CRYPTO,REVERSION,SWING,OHLCV_DAILY,,Y,MARGIN_REQUIRED,,,,,,NOT_STARTED,,,J-Contrarian,1-week / 1-month cross-sectional reversal; contrarian,ADDED: discovered; canonical home for 'contrarian' as a strategy
+C-001,Support & Resistance Levels,FEATURE,CORE,C,Price Action / S&R / Supply & Demand,US_STOCKS;SPOT_CRYPTO,,,OHLCV_DAILY,,,,,,,,,,,,C-Swing Points; C-Pivot Points,Horizontal levels; key levels,'Horizontal levels' merged here. Many competing detection algorithms
+C-002,Supply & Demand Zones,FEATURE,CORE,C,Price Action / S&R / Supply & Demand,US_STOCKS;SPOT_CRYPTO,,,OHLCV_DAILY,,,,,,,,,,,,D-Order Blocks,Base-rally/drop zones,High ambiguity; overlaps order blocks
+C-003,Break and Retest,STRATEGY,CORE,C,Price Action / S&R / Supply & Demand,US_STOCKS;SPOT_CRYPTO,BREAKOUT,SWING,OHLCV_DAILY,,Y,MARGIN_REQUIRED,,,,,,NOT_STARTED,,,C-S&R; A-Donchian,Breakout pullback,
+C-004,Trendlines,FEATURE,CORE,C,Price Action / S&R / Supply & Demand,US_STOCKS;SPOT_CRYPTO,,,OHLCV_DAILY,,,,,,,,,,,,C-Channel Trading,Trendline trading,Detection is subjective; needs algorithmic definition
+C-005,Channel Trading,STRATEGY,CORE,C,Price Action / S&R / Supply & Demand,US_STOCKS;SPOT_CRYPTO,REVERSION,SWING,OHLCV_DAILY,,Y,MARGIN_REQUIRED,,,,,,NOT_STARTED,,,C-Trendlines,Regression / parallel channel,
+C-006,Candlestick Pattern Trading,STRATEGY,CORE,C,Price Action / S&R / Supply & Demand,US_STOCKS;SPOT_CRYPTO,OTHER,SWING,OHLCV_DAILY,,Y,MARGIN_REQUIRED,,,,,,NOT_STARTED,,,C-Pin Bar; C-Engulfing; C-Inside Bar; C-Outside Bar,Candlestick signals,Umbrella strategy; individual patterns are FEATUREs
+C-007,Pin Bar,FEATURE,CORE,C,Price Action / S&R / Supply & Demand,US_STOCKS;SPOT_CRYPTO,,,OHLCV_DAILY,,,,,,,,,,,,C-Rejection Trading,Hammer; shooting star,
+C-008,Engulfing Pattern,FEATURE,CORE,C,Price Action / S&R / Supply & Demand,US_STOCKS;SPOT_CRYPTO,,,OHLCV_DAILY,,,,,,,,,,,,,Bullish/bearish engulfing,
+C-009,Inside Bar,FEATURE,CORE,C,Price Action / S&R / Supply & Demand,US_STOCKS;SPOT_CRYPTO,,,OHLCV_DAILY,,,,,,,,,,,,H-Volatility Contraction,Harami-like contraction bar,
+C-010,Outside Bar,FEATURE,CORE,C,Price Action / S&R / Supply & Demand,US_STOCKS;SPOT_CRYPTO,,,OHLCV_DAILY,,,,,,,,,,,,,Expansion bar,
+C-011,Rejection Trading,STRATEGY,CORE,C,Price Action / S&R / Supply & Demand,US_STOCKS;SPOT_CRYPTO,REVERSION,SWING,OHLCV_DAILY,,Y,MARGIN_REQUIRED,,,,,,NOT_STARTED,,,C-S&R; C-Pin Bar,Level rejection; wick rejection,
+C-012,Failed Breakout Reversal,STRATEGY,CORE,C,Price Action / S&R / Supply & Demand,US_STOCKS;SPOT_CRYPTO,REVERSION,INTRADAY,OHLCV_DAILY,,Y,MARGIN_REQUIRED,,,,,,NOT_STARTED,,,D-Liquidity Sweep,False breakout; fakeout fade; turtle soup,Operationally near-identical to D-Liquidity Sweep (see decisions)
+C-013,Swing Highs/Lows,FEATURE,CORE,C,Price Action / S&R / Supply & Demand,US_STOCKS;SPOT_CRYPTO,,,OHLCV_DAILY,,,,,,,,,,,,D-BOS; D-MSS,Swing points; zigzag,Confirmed only N bars later: major look-ahead risk
+C-014,Pivot Points,FEATURE,CORE,C,Price Action / S&R / Supply & Demand,US_STOCKS;SPOT_CRYPTO,,,OHLCV_DAILY,,,,,,,,,,,,C-S&R,Floor/Camarilla/Fibonacci pivots,
+C-015,Fibonacci Retracement,FEATURE,CORE,C,Price Action / S&R / Supply & Demand,US_STOCKS;SPOT_CRYPTO,,,OHLCV_DAILY,,,,,,,,,,,,D-OTE,Fib levels,Canonical home; OTE (D) references it
+C-016,Fibonacci Extensions,FEATURE,CORE,C,Price Action / S&R / Supply & Demand,US_STOCKS;SPOT_CRYPTO,,,OHLCV_DAILY,,,,,,,,,,,,,Fib targets,
+C-017,Chart Pattern Trading,FRAMEWORK,CORE,C,Price Action / S&R / Supply & Demand,US_STOCKS;SPOT_CRYPTO,,,OHLCV_DAILY,,,,,,,,,,,,C-H&S; C-Double Top/Bottom; C-Flags; C-Triangles; C-Wedges,Classical chart patterns,Umbrella; must be operationalized per pattern
+C-018,Head and Shoulders,FEATURE,CORE,C,Price Action / S&R / Supply & Demand,US_STOCKS;SPOT_CRYPTO,,,OHLCV_DAILY,,,,,,,,,,,,C-Chart Patterns,H&S; inverse H&S,
+C-019,Double Top / Double Bottom,FEATURE,CORE,C,Price Action / S&R / Supply & Demand,US_STOCKS;SPOT_CRYPTO,,,OHLCV_DAILY,,,,,,,,,,,,D-Equal Highs/Lows,M/W patterns,
+C-020,Flags and Pennants,FEATURE,CORE,C,Price Action / S&R / Supply & Demand,US_STOCKS;SPOT_CRYPTO,,,OHLCV_DAILY,,,,,,,,,,,,,Continuation patterns,Flags and pennants merged into one detector family
+C-021,Triangles,FEATURE,CORE,C,Price Action / S&R / Supply & Demand,US_STOCKS;SPOT_CRYPTO,,,OHLCV_DAILY,,,,,,,,,,,,H-Volatility Contraction,Ascending/descending/symmetrical,
+C-022,Wedges,FEATURE,CORE,C,Price Action / S&R / Supply & Demand,US_STOCKS;SPOT_CRYPTO,,,OHLCV_DAILY,,,,,,,,,,,,,Rising/falling wedges,
+D-001,ICT / Smart Money Concepts (umbrella),FRAMEWORK,CORE,D,Smart Money Concepts & ICT,US_STOCKS;SPOT_CRYPTO,,,OHLCV_INTRADAY,,,,,,,,,,,,all D entries,SMC; ICT,ADDED as umbrella. Institutional-manipulation narrative = Hypothesis (untested)
+D-002,Liquidity Sweep Reversal,STRATEGY,CORE,D,Smart Money Concepts & ICT,US_STOCKS;SPOT_CRYPTO,REVERSION,INTRADAY,OHLCV_INTRADAY,,Y,MARGIN_REQUIRED,,,,,,NOT_STARTED,,,C-Failed Breakout; D-Judas Swing,Stop hunt; liquidity grab,SMC variant of C-Failed Breakout using SMC level definitions
+D-003,Equal Highs / Equal Lows,FEATURE,CORE,D,Smart Money Concepts & ICT,US_STOCKS;SPOT_CRYPTO,,,OHLCV_INTRADAY,,,,,,,,,,,,C-Double Top/Bottom,EQH/EQL,Needs tolerance parameter
+D-004,Buy-Side / Sell-Side Liquidity Pools,FEATURE,CORE,D,Smart Money Concepts & ICT,US_STOCKS;SPOT_CRYPTO,,,OHLCV_INTRADAY,,,,,,,,,,,,D-EQH/EQL; C-Swing Points,BSL/SSL; liquidity pools,"BSL, SSL and 'liquidity pools' merged: same concept (clustered highs/lows)"
+D-005,Fair Value Gap,FEATURE,CORE,D,Smart Money Concepts & ICT,US_STOCKS;SPOT_CRYPTO,,,OHLCV_INTRADAY,,,,,,,,,,,,D-Inverse FVG; D-BPR,FVG; imbalance,Clean 3-bar definition exists: most testable D concept
+D-006,Inverse Fair Value Gap,FEATURE,CORE,D,Smart Money Concepts & ICT,US_STOCKS;SPOT_CRYPTO,,,OHLCV_INTRADAY,,,,,,,,,,,,D-FVG,IFVG,
+D-007,Order Blocks,FEATURE,CORE,D,Smart Money Concepts & ICT,US_STOCKS;SPOT_CRYPTO,,,OHLCV_INTRADAY,,,,,,,,,,,,C-Supply & Demand,OB,High ambiguity
+D-008,Breaker Blocks,FEATURE,CORE,D,Smart Money Concepts & ICT,US_STOCKS;SPOT_CRYPTO,,,OHLCV_INTRADAY,,,,,,,,,,,,D-Order Blocks,Breaker,
+D-009,Mitigation Blocks,FEATURE,CORE,D,Smart Money Concepts & ICT,US_STOCKS;SPOT_CRYPTO,,,OHLCV_INTRADAY,,,,,,,,,,,,D-Order Blocks,Mitigation,
+D-010,Break of Structure,FEATURE,CORE,D,Smart Money Concepts & ICT,US_STOCKS;SPOT_CRYPTO,,,OHLCV_INTRADAY,,,,,,,,,,,,C-Swing Points,BOS,
+D-011,Market Structure Shift / CHOCH,FEATURE,CORE,D,Smart Money Concepts & ICT,US_STOCKS;SPOT_CRYPTO,,,OHLCV_INTRADAY,,,,,,,,,,,,D-BOS,MSS; Change of Character,MSS and CHOCH merged: practitioners use them near-interchangeably (see decisions)
+D-012,Displacement,FEATURE,CORE,D,Smart Money Concepts & ICT,US_STOCKS;SPOT_CRYPTO,,,OHLCV_INTRADAY,,,,,,,,,,,,D-FVG,Impulsive move,Needs threshold (e.g. range > k*ATR)
+D-013,Premium / Discount,FILTER,CORE,D,Smart Money Concepts & ICT,US_STOCKS;SPOT_CRYPTO,,,OHLCV_INTRADAY,,,,,,,,,,,,C-Fib Retracement,Equilibrium; 50% of range,
+D-014,Optimal Trade Entry,FILTER,CORE,D,Smart Money Concepts & ICT,US_STOCKS;SPOT_CRYPTO,,,OHLCV_INTRADAY,,,,,,,,,,,,C-Fib Retracement,OTE; 62-79% retracement,
+D-015,SMT Divergence,FILTER,CORE,D,Smart Money Concepts & ICT,US_STOCKS;SPOT_CRYPTO,,,OHLCV_INTRADAY,,,,,,,,,,,,B-RSI Divergence,Smart Money Technique divergence,"Needs correlated pair: BTC/ETH, SPY/QQQ"
+D-016,Judas Swing,STRATEGY,CORE,D,Smart Money Concepts & ICT,US_STOCKS;SPOT_CRYPTO,REVERSION,INTRADAY,OHLCV_INTRADAY,,Y,MARGIN_REQUIRED,,,,,,NOT_STARTED,,,D-Liquidity Sweep; K-Session Filter,Session-open false move,Session-anchored liquidity sweep
+D-017,Power of Three / AMD,FRAMEWORK,CORE,D,Smart Money Concepts & ICT,US_STOCKS;SPOT_CRYPTO,,,OHLCV_INTRADAY,,,,,,,,,,,,D-Judas Swing,Accumulation-Manipulation-Distribution,
+D-018,Kill Zones,FILTER,CORE,D,Smart Money Concepts & ICT,US_STOCKS;SPOT_CRYPTO,,,OHLCV_INTRADAY,,,,,,,,,,,,K-Session Filter,ICT session windows,Overlaps K-Session Filter; kept separate because time windows differ
+D-019,Daily Bias,FILTER,CORE,D,Smart Money Concepts & ICT,US_STOCKS;SPOT_CRYPTO,,,OHLCV_DAILY,,,,,,,,,,,,N-Multi-Timeframe,HTF directional bias,
+D-020,IPDA Concepts,FRAMEWORK,CORE,D,Smart Money Concepts & ICT,US_STOCKS;SPOT_CRYPTO,,,OHLCV_DAILY,,,,,,,,,,,,,Interbank Price Delivery Algorithm; 20/40/60-day lookbacks,Claim of a delivery algorithm is Hypothesis (untested)
+D-021,Inducement,FEATURE,CORE,D,Smart Money Concepts & ICT,US_STOCKS;SPOT_CRYPTO,,,OHLCV_INTRADAY,,,,,,,,,,,,D-Liquidity Pools,IDM,High ambiguity
+D-022,Balanced Price Range,FEATURE,CORE,D,Smart Money Concepts & ICT,US_STOCKS;SPOT_CRYPTO,,,OHLCV_INTRADAY,,,,,,,,,,,,D-FVG,BPR; overlapping FVGs,
+E-001,Volume Profile,FEATURE,CORE,E,Volume & Order Flow,US_STOCKS;SPOT_CRYPTO,,,OHLCV_INTRADAY,,,,,,,,,,,,E-POC; E-Value Area; N-Market Profile,VP; fixed-range VP,Fixed-range VP merged. Bar-based approximation is CORE; exact needs trades
+E-002,Point of Control,FEATURE,CORE,E,Volume & Order Flow,US_STOCKS;SPOT_CRYPTO,,,OHLCV_INTRADAY,,,,,,,,,,,,E-Volume Profile,POC,
+E-003,Value Area High / Low,FEATURE,CORE,E,Volume & Order Flow,US_STOCKS;SPOT_CRYPTO,,,OHLCV_INTRADAY,,,,,,,,,,,,E-Volume Profile,VAH/VAL,
+E-004,VWAP,FEATURE,CORE,E,Volume & Order Flow,US_STOCKS;SPOT_CRYPTO,,,OHLCV_INTRADAY,,,,,,,,,,,,B-VWAP Reversion; L-VWAP Execution,Session VWAP,
+E-005,Anchored VWAP,FEATURE,CORE,E,Volume & Order Flow,US_STOCKS;SPOT_CRYPTO,,,OHLCV_INTRADAY,,,,,,,,,,,,E-VWAP,AVWAP,
+E-006,Volume Breakout,STRATEGY,CORE,E,Volume & Order Flow,US_STOCKS;SPOT_CRYPTO,BREAKOUT,SWING,OHLCV_DAILY,,Y,MARGIN_REQUIRED,,,,,,NOT_STARTED,,,A-Donchian,High-relative-volume breakout,
+E-007,On-Balance Volume,FEATURE,CORE,E,Volume & Order Flow,US_STOCKS;SPOT_CRYPTO,,,OHLCV_DAILY,,,,,,,,,,,,,OBV,
+E-008,Cumulative Volume Delta,FEATURE,CORE-DATA,E,Volume & Order Flow,US_STOCKS;SPOT_CRYPTO,,,TICK,,,,,,,,,,,,E-Delta Divergence,CVD,"Needs aggressor side; free in crypto trade feeds, paid for US stocks"
+E-009,Footprint Charts,FEATURE,CORE-DATA,E,Volume & Order Flow,US_STOCKS;SPOT_CRYPTO,,,TICK,,,,,,,,,,,,E-CVD,Bid/ask footprint,
+E-010,Order Book Imbalance,FEATURE,CORE-DATA,E,Volume & Order Flow,US_STOCKS;SPOT_CRYPTO,,,L2,,,,,,,,,,,,,OBI; queue imbalance,L2 snapshots; crypto exchanges free via websocket
+E-011,Absorption,FEATURE,CORE-DATA,E,Volume & Order Flow,US_STOCKS;SPOT_CRYPTO,,,TICK,,,,,,,,,,,,E-Footprint,Passive absorption,
+E-012,Iceberg Order Detection,FEATURE,CORE-DATA,E,Volume & Order Flow,US_STOCKS;SPOT_CRYPTO,,,L2,,,,,,,,,,,,L-Iceberg Execution,Hidden size detection,Needs L2 + trades (ideally L3)
+E-013,Delta Divergence,FILTER,CORE-DATA,E,Volume & Order Flow,US_STOCKS;SPOT_CRYPTO,,,TICK,,,,,,,,,,,,E-CVD; B-RSI Divergence,Price vs CVD divergence,
+E-014,Time and Sales Analysis,FEATURE,CORE-DATA,E,Volume & Order Flow,US_STOCKS;SPOT_CRYPTO,,,TICK,,,,,,,,,,,,E-CVD,Tape reading,Data source more than a method
+E-015,Volume Spread Analysis,FRAMEWORK,CORE,E,Volume & Order Flow,US_STOCKS;SPOT_CRYPTO,,,OHLCV_DAILY,,,,,,,,,,,,N-Wyckoff,VSA,
+E-016,Money Flow Index,FEATURE,CORE,E,Volume & Order Flow,US_STOCKS;SPOT_CRYPTO,,,OHLCV_DAILY,,,,,,,,,,,,,MFI,
+E-017,Accumulation/Distribution Line,FEATURE,CORE,E,Volume & Order Flow,US_STOCKS;SPOT_CRYPTO,,,OHLCV_DAILY,,,,,,,,,,,,,A/D; Chaikin,
+F-001,Statistical Arbitrage,STRATEGY,CORE,F,Quantitative & Statistical,US_STOCKS;SPOT_CRYPTO,STAT_ARB,SWING,OHLCV_DAILY,,Y,MARGIN_REQUIRED,,,,,,NOT_STARTED,,,B-Pairs; F-PCA,Stat arb; multi-asset residual reversion,Canonical home for stat arb (also listed in I)
+F-002,Multi-Factor Model / Factor Investing,STRATEGY,CORE,F,Quantitative & Statistical,US_STOCKS;SPOT_CRYPTO,OTHER,LONG_TERM,FUNDAMENTAL,,Y,MARGIN_REQUIRED,,,,,,NOT_STARTED,,,A-XSMOM; F-Value; F-Quality; F-Low Vol,Factor investing; smart beta,Factor investing and multi-factor models merged
+F-003,Value Factor,STRATEGY,CORE,F,Quantitative & Statistical,US_STOCKS,OTHER,LONG_TERM,FUNDAMENTAL,,Y,MARGIN_REQUIRED,,,,,,NOT_STARTED,,,G-Financial Statement Analysis,"Value investing (G); B/M, E/P",Absorbs G 'Value Investing'
+F-004,Quality Factor,STRATEGY,CORE,F,Quantitative & Statistical,US_STOCKS,OTHER,LONG_TERM,FUNDAMENTAL,,Y,MARGIN_REQUIRED,,,,,,NOT_STARTED,,,G-Cash Flow Strategies,Quality investing (G); profitability,Absorbs G 'Quality Investing'
+F-005,Low Volatility Factor,STRATEGY,CORE,F,Quantitative & Statistical,US_STOCKS;SPOT_CRYPTO,OTHER,LONG_TERM,OHLCV_DAILY,,Y,MARGIN_REQUIRED,,,,,,NOT_STARTED,,,M-Risk Parity,Low-vol anomaly; min-variance,
+F-006,Residual Momentum,STRATEGY,CORE,F,Quantitative & Statistical,US_STOCKS;SPOT_CRYPTO,TREND,POSITION,OHLCV_DAILY,,Y,MARGIN_REQUIRED,,,,,,NOT_STARTED,,,A-XSMOM,Idiosyncratic momentum,
+F-007,Kalman Filter,MODEL,CORE,F,Quantitative & Statistical,US_STOCKS;SPOT_CRYPTO,,,OHLCV_DAILY,,,,,,,,,,,,B-Cointegration Pairs,Dynamic hedge ratio; state-space,
+F-008,Hidden Markov Model,MODEL,CORE,F,Quantitative & Statistical,US_STOCKS;SPOT_CRYPTO,,,OHLCV_DAILY,,,,,,,,,,,,F-Regime Switching,HMM regimes,
+F-009,Regime Switching Models,MODEL,CORE,F,Quantitative & Statistical,US_STOCKS;SPOT_CRYPTO,,,OHLCV_DAILY,,,,,,,,,,,,H-Volatility Regime,Markov-switching,
+F-010,Bayesian Models,MODEL,CORE,F,Quantitative & Statistical,US_STOCKS;SPOT_CRYPTO,,,OHLCV_DAILY,,,,,,,,,,,,,Bayesian inference; shrinkage,
+F-011,Monte Carlo Simulation,RISK,CORE,F,Quantitative & Statistical,US_STOCKS;SPOT_CRYPTO,,,OHLCV_DAILY,,,,,,,,,,,,M-Risk of Ruin,Bootstrap; resampling,"Validation/risk tool, not alpha"
+F-012,Machine Learning Signals (umbrella),MODEL,CORE,F,Quantitative & Statistical,US_STOCKS;SPOT_CRYPTO,,,OHLCV_DAILY,,,,,,,,,,,,all F models,ML alpha,
+F-013,Reinforcement Learning,MODEL,CORE,F,Quantitative & Statistical,US_STOCKS;SPOT_CRYPTO,,,OHLCV_DAILY,,,,,,,,,,,,,RL agents,Highest overfitting risk
+F-014,Classical Time-Series Forecasting,MODEL,CORE,F,Quantitative & Statistical,US_STOCKS;SPOT_CRYPTO,,,OHLCV_DAILY,,,,,,,,,,,,H-Volatility Regime,ARIMA; GARCH,
+F-015,Linear Regression,MODEL,CORE,F,Quantitative & Statistical,US_STOCKS;SPOT_CRYPTO,,,OHLCV_DAILY,,,,,,,,,,,,,OLS; ridge; lasso,
+F-016,Logistic Regression,MODEL,CORE,F,Quantitative & Statistical,US_STOCKS;SPOT_CRYPTO,,,OHLCV_DAILY,,,,,,,,,,,,,Direction classification,
+F-017,Random Forest,MODEL,CORE,F,Quantitative & Statistical,US_STOCKS;SPOT_CRYPTO,,,OHLCV_DAILY,,,,,,,,,,,,,RF,
+F-018,Gradient Boosting / XGBoost,MODEL,CORE,F,Quantitative & Statistical,US_STOCKS;SPOT_CRYPTO,,,OHLCV_DAILY,,,,,,,,,,,,,GBM; XGBoost; LightGBM,Gradient boosting and XGBoost merged
+F-019,Neural Networks (MLP),MODEL,CORE,F,Quantitative & Statistical,US_STOCKS;SPOT_CRYPTO,,,OHLCV_DAILY,,,,,,,,,,,,,Feed-forward nets,
+F-020,LSTM,MODEL,CORE,F,Quantitative & Statistical,US_STOCKS;SPOT_CRYPTO,,,OHLCV_DAILY,,,,,,,,,,,,,Recurrent nets,
+F-021,Transformer Forecasting,MODEL,CORE,F,Quantitative & Statistical,US_STOCKS;SPOT_CRYPTO,,,OHLCV_DAILY,,,,,,,,,,,,,Attention models,
+F-022,PCA-Based Strategies,MODEL,CORE,F,Quantitative & Statistical,US_STOCKS;SPOT_CRYPTO,,,OHLCV_DAILY,,,,,,,,,,,,F-Stat Arb,Eigenportfolios,
+F-023,Clustering Methods,MODEL,CORE,F,Quantitative & Statistical,US_STOCKS;SPOT_CRYPTO,,,OHLCV_DAILY,,,,,,,,,,,,M-Correlation Allocation,k-means; hierarchical,
+F-024,Anomaly Detection,MODEL,CORE,F,Quantitative & Statistical,US_STOCKS;SPOT_CRYPTO,,,OHLCV_DAILY,,,,,,,,,,,,,Outlier detection,
+G-001,Growth Investing,STRATEGY,CORE,G,Fundamental & Macro,US_STOCKS,OTHER,LONG_TERM,FUNDAMENTAL,,Y,N,,,,,,NOT_STARTED,,,F-Multi-Factor,Growth screens,
+G-002,Dividend Investing,STRATEGY,CORE,G,Fundamental & Macro,US_STOCKS,OTHER,LONG_TERM,FUNDAMENTAL,,Y,N,,,,,,NOT_STARTED,,,F-Value,Dividend yield / growth,Dividend purification is a Sharia item
+G-003,Post-Earnings Announcement Drift,STRATEGY,CORE,G,Fundamental & Macro,US_STOCKS,EVENT,SWING,FUNDAMENTAL,,Y,MARGIN_REQUIRED,,,,,,NOT_STARTED,,,G-Earnings Momentum,Earnings surprise; PEAD; SUE,'Earnings surprise' merged here
+G-004,Earnings Momentum,STRATEGY,CORE,G,Fundamental & Macro,US_STOCKS,EVENT,POSITION,FUNDAMENTAL,,Y,MARGIN_REQUIRED,,,,,,NOT_STARTED,,,J-Analyst Revisions,Estimate momentum,
+G-005,News Trading,STRATEGY,CORE-DATA,G,Fundamental & Macro,US_STOCKS;SPOT_CRYPTO,EVENT,INTRADAY,ALT,,Y,MARGIN_REQUIRED,,,,,,NOT_STARTED,,,J-News Sentiment,Headline trading,Latency-sensitive
+G-006,Interest Rate Regime,FILTER,CORE,G,Fundamental & Macro,US_STOCKS;SPOT_CRYPTO,,,ALT,,,,,,,,,,,,G-Yield Curve,Rates trading,Direct rate trading needs bonds/futures: only used here as a filter
+G-007,Inflation Regime,FILTER,CORE,G,Fundamental & Macro,US_STOCKS;SPOT_CRYPTO,,,ALT,,,,,,,,,,,,,CPI regime,Filter use only
+G-008,GDP / Growth Regime,FILTER,CORE,G,Fundamental & Macro,US_STOCKS;SPOT_CRYPTO,,,ALT,,,,,,,,,,,,,Macro growth regime,Filter use only
+G-009,Central Bank Events,FILTER,CORE,G,Fundamental & Macro,US_STOCKS;SPOT_CRYPTO,,,ALT,,,,,,,,,,,,K-Session Filter,FOMC trading,Filter / event-window use
+G-010,Yield Curve Regime,FILTER,CORE,G,Fundamental & Macro,US_STOCKS;SPOT_CRYPTO,,,ALT,,,,,,,,,,,,,Curve slope,Filter use only
+G-011,Sector Rotation,STRATEGY,CORE,G,Fundamental & Macro,US_STOCKS,TREND,POSITION,OHLCV_DAILY,,Y,N,,,,,,NOT_STARTED,,,A-Momentum Rotation,Sector ETF rotation,
+G-012,Event-Driven Investing,FRAMEWORK,CORE,G,Fundamental & Macro,US_STOCKS,,,ALT,,,,,,,,,,,,G-Merger Arb,Corporate events,Umbrella
+G-013,Merger Arbitrage,STRATEGY,CORE,G,Fundamental & Macro,US_STOCKS,EVENT,POSITION,ALT,,Y,MARGIN_REQUIRED,,,,,,NOT_STARTED,,,G-Event-Driven,Risk arbitrage,Stock deals need shorting acquirer
+G-014,Financial Statement Analysis,FRAMEWORK,CORE,G,Fundamental & Macro,US_STOCKS,,,FUNDAMENTAL,,,,,,,,,,,,F-Quality; F-Value,F-Score; accounting signals,
+G-015,Cash-Flow Based Strategies,STRATEGY,CORE,G,Fundamental & Macro,US_STOCKS,OTHER,LONG_TERM,FUNDAMENTAL,,Y,MARGIN_REQUIRED,,,,,,NOT_STARTED,,,F-Quality,FCF yield; accruals anomaly,
+G-016,Insider Activity,STRATEGY,CORE,G,Fundamental & Macro,US_STOCKS,EVENT,POSITION,ALT,,Y,N,,,,,,NOT_STARTED,,,J-Insider (xref),Insider transactions; Form 4,Canonical home (also listed in J)
+H-001,Volatility Breakout,STRATEGY,CORE,H,Volatility,US_STOCKS;SPOT_CRYPTO,BREAKOUT,SWING,OHLCV_DAILY,,Y,MARGIN_REQUIRED,,,,,,NOT_STARTED,,,A-Donchian,Range-expansion breakout,
+H-002,Bollinger Squeeze,STRATEGY,CORE,H,Volatility,US_STOCKS;SPOT_CRYPTO,BREAKOUT,SWING,OHLCV_DAILY,,Y,MARGIN_REQUIRED,,,,,,NOT_STARTED,,,B-Bollinger Reversion,BB/Keltner squeeze,
+H-003,ATR & ATR Bands,FEATURE,CORE,H,Volatility,US_STOCKS;SPOT_CRYPTO,,,OHLCV_DAILY,,,,,,,,,,,,M-Volatility Targeting; A-Supertrend,ATR-based trading,ATR is the feature; trading uses live in stops/sizing
+H-004,Volatility Expansion / Contraction,FILTER,CORE,H,Volatility,US_STOCKS;SPOT_CRYPTO,,,OHLCV_DAILY,,,,,,,,,,,,H-Bollinger Squeeze; C-Inside Bar,Vol compression/expansion,Expansion and contraction merged into one regime filter
+H-005,Implied vs Realized Volatility,STRATEGY,OUT-OF-SCOPE,H,Volatility,OPTIONS,OTHER,SWING,ALT,,Y,MARGIN_REQUIRED,,,,,,NOT_STARTED,,,,Variance risk premium,Requires options
+H-006,Volatility Skew Trading,STRATEGY,OUT-OF-SCOPE,H,Volatility,OPTIONS,OTHER,SWING,ALT,,Y,MARGIN_REQUIRED,,,,,,NOT_STARTED,,,,Skew,Requires options
+H-007,Long Straddle,STRATEGY,OUT-OF-SCOPE,H,Volatility,OPTIONS,OTHER,SWING,ALT,,Y,N,,,,,,NOT_STARTED,,,,,Requires options
+H-008,Long Strangle,STRATEGY,OUT-OF-SCOPE,H,Volatility,OPTIONS,OTHER,SWING,ALT,,Y,N,,,,,,NOT_STARTED,,,,,Requires options
+H-009,Iron Condor,STRATEGY,OUT-OF-SCOPE,H,Volatility,OPTIONS,OTHER,SWING,ALT,,Y,MARGIN_REQUIRED,,,,,,NOT_STARTED,,,,,Requires options
+H-010,Volatility Regime Filter,FILTER,CORE,H,Volatility,US_STOCKS;SPOT_CRYPTO,,,OHLCV_DAILY,,,,,,,,,,,,F-Regime Switching,Volatility regime trading,
+I-001,Cross-Exchange (Spatial) Arbitrage,STRATEGY,OUT-OF-SCOPE,I,Arbitrage,SPOT_CRYPTO,STAT_ARB,INTRADAY,L2,,Y,MARGIN_REQUIRED,,,,,,NOT_STARTED,,,,Spatial arb,"Spatial and cross-exchange merged. Needs inventory on multiple venues, speed"
+I-002,Triangular Arbitrage,STRATEGY,OUT-OF-SCOPE,I,Arbitrage,SPOT_CRYPTO;FX,STAT_ARB,INTRADAY,L2,,Y,MARGIN_REQUIRED,,,,,,NOT_STARTED,,,,,Latency competition
+I-003,Index Arbitrage,STRATEGY,OUT-OF-SCOPE,I,Arbitrage,FUTURES,STAT_ARB,INTRADAY,TICK,,Y,MARGIN_REQUIRED,,,,,,NOT_STARTED,,,,,Futures + basket
+I-004,ETF Arbitrage,STRATEGY,OUT-OF-SCOPE,I,Arbitrage,US_STOCKS,STAT_ARB,INTRADAY,TICK,,Y,MARGIN_REQUIRED,,,,,,NOT_STARTED,,,,Creation/redemption,Authorized-participant access
+I-005,Futures-Spot Basis Arbitrage,STRATEGY,OUT-OF-SCOPE,I,Arbitrage,FUTURES;SPOT_CRYPTO,CARRY,POSITION,OHLCV_DAILY,,Y,MARGIN_REQUIRED,,,,,,NOT_STARTED,,,,Cash-and-carry; reverse cash-and-carry,Cash-and-carry and reverse merged into this entry
+I-006,Funding Rate Arbitrage,STRATEGY,OUT-OF-SCOPE,I,Arbitrage,FUTURES;SPOT_CRYPTO,CARRY,POSITION,OHLCV_DAILY,,Y,MARGIN_REQUIRED,,,,,,NOT_STARTED,,,,Perp funding carry,Requires perpetual futures
+J-001,Fear & Greed Index,FEATURE,CORE,J,Sentiment & Behavioral,US_STOCKS;SPOT_CRYPTO,,,ALT,,,,,,,,,,,,J-Contrarian,CNN / crypto F&G,
+J-002,News Sentiment,FEATURE,CORE-DATA,J,Sentiment & Behavioral,US_STOCKS;SPOT_CRYPTO,,,ALT,,,,,,,,,,,,G-News Trading,NLP news scores,
+J-003,Social Media Sentiment,FEATURE,CORE-DATA,J,Sentiment & Behavioral,US_STOCKS;SPOT_CRYPTO,,,ALT,,,,,,,,,,,,,Reddit sentiment; X/Twitter; StockTwits,Reddit merged here
+J-004,Google Trends,FEATURE,CORE,J,Sentiment & Behavioral,US_STOCKS;SPOT_CRYPTO,,,ALT,,,,,,,,,,,,,Search volume,
+J-005,Contrarian Trading,FRAMEWORK,CORE,J,Sentiment & Behavioral,US_STOCKS;SPOT_CRYPTO,,,OHLCV_DAILY,,,,,,,,,,,,B-Short-Term Reversal; J-Fear & Greed,Fade the crowd,Strategy form lives in B
+J-006,Crowded Trade Detection,FILTER,CORE,J,Sentiment & Behavioral,US_STOCKS;SPOT_CRYPTO,,,ALT,,,,,,,,,,,,J-Short Interest; J-13F,Crowding,
+J-007,Short Interest,STRATEGY,CORE,J,Sentiment & Behavioral,US_STOCKS,OTHER,POSITION,ALT,,Y,MARGIN_REQUIRED,,,,,,NOT_STARTED,,,,Days-to-cover,FINRA bi-monthly data
+J-008,Analyst Revisions,STRATEGY,CORE-DATA,J,Sentiment & Behavioral,US_STOCKS,EVENT,POSITION,FUNDAMENTAL,,Y,MARGIN_REQUIRED,,,,,,NOT_STARTED,,,G-Earnings Momentum,Estimate revisions,Consensus data usually paid
+J-009,Put/Call Ratio,FEATURE,CORE,J,Sentiment & Behavioral,US_STOCKS;SPOT_CRYPTO,,,ALT,,,,,,,,,,,,,Options sentiment,Uses published ratios only; no options trading
+J-010,Institutional Holdings (13F),STRATEGY,CORE,J,Sentiment & Behavioral,US_STOCKS,OTHER,LONG_TERM,ALT,,Y,N,,,,,,NOT_STARTED,,,J-Crowding,13F; hedge-fund cloning,45-day reporting lag
+J-011,Crypto On-Chain Metrics,FEATURE,CORE-DATA,J,Sentiment & Behavioral,SPOT_CRYPTO,,,ALT,,,,,,,,,,,,,MVRV; exchange flows,ADDED: discovered
+K-001,Day-of-Week Effect,STRATEGY,CORE,K,Seasonality & Time-Based,US_STOCKS;SPOT_CRYPTO,OTHER,SWING,OHLCV_DAILY,,Y,MARGIN_REQUIRED,,,,,,NOT_STARTED,,,K-Crypto Weekend,Weekday effects,
+K-002,Turn-of-the-Month,STRATEGY,CORE,K,Seasonality & Time-Based,US_STOCKS;SPOT_CRYPTO,OTHER,SWING,OHLCV_DAILY,,Y,MARGIN_REQUIRED,,,,,,NOT_STARTED,,,,TOM; month-end effect,Month-end effect merged here
+K-003,January Effect,STRATEGY,CORE,K,Seasonality & Time-Based,US_STOCKS,OTHER,POSITION,OHLCV_DAILY,,Y,MARGIN_REQUIRED,,,,,,NOT_STARTED,,,,Small-cap January,
+K-004,Session-Based Filter,FILTER,CORE,K,Seasonality & Time-Based,US_STOCKS;SPOT_CRYPTO,,,OHLCV_INTRADAY,,,,,,,,,,,,D-Kill Zones,Asia/London/NY sessions,
+K-005,London Open Breakout,STRATEGY,CORE,K,Seasonality & Time-Based,SPOT_CRYPTO,BREAKOUT,INTRADAY,OHLCV_INTRADAY,,Y,MARGIN_REQUIRED,,,,,,NOT_STARTED,,,K-Session Filter,London open,"Applies to crypto, not US stocks"
+K-006,Opening Range Breakout,STRATEGY,CORE,K,Seasonality & Time-Based,US_STOCKS;SPOT_CRYPTO,BREAKOUT,INTRADAY,OHLCV_INTRADAY,,Y,MARGIN_REQUIRED,,,,,,NOT_STARTED,,,C (listed); K-Session Filter,ORB; NY open breakout,Canonical home (also listed in C). 'New York Open' merged here
+K-007,Closing Auction Imbalance,STRATEGY,CORE-DATA,K,Seasonality & Time-Based,US_STOCKS,EVENT,INTRADAY,TICK,,Y,MARGIN_REQUIRED,,,,,,NOT_STARTED,,,,MOC imbalance,Needs imbalance feed
+K-008,Commodity Seasonality,STRATEGY,OUT-OF-SCOPE,K,Seasonality & Time-Based,FUTURES,OTHER,POSITION,OHLCV_DAILY,,Y,MARGIN_REQUIRED,,,,,,NOT_STARTED,,,,Seasonal spreads,Commodity futures
+K-009,Crypto Weekend Effect,STRATEGY,CORE,K,Seasonality & Time-Based,SPOT_CRYPTO,OTHER,SWING,OHLCV_INTRADAY,,Y,MARGIN_REQUIRED,,,,,,NOT_STARTED,,,K-Day-of-Week,Weekend returns/volatility,
+K-010,Intraday Time-of-Day Momentum,STRATEGY,CORE,K,Seasonality & Time-Based,US_STOCKS;SPOT_CRYPTO,TREND,INTRADAY,OHLCV_INTRADAY,,Y,MARGIN_REQUIRED,,,,,,NOT_STARTED,,,K-ORB,Intraday patterns; last-half-hour momentum,
+K-011,Overnight vs Intraday Returns,STRATEGY,CORE,K,Seasonality & Time-Based,US_STOCKS,OTHER,SWING,OHLCV_DAILY,,Y,MARGIN_REQUIRED,,,,,,NOT_STARTED,,,,Night effect,ADDED: discovered
+L-001,Market Making,STRATEGY,OUT-OF-SCOPE,L,Algorithmic Execution,,OTHER,INTRADAY,L2,,Y,MARGIN_REQUIRED,,,,,,NOT_STARTED,,,,Liquidity provision,"Inventory risk, low-latency infra"
+L-002,High-Frequency Trading,STRATEGY,OUT-OF-SCOPE,L,Algorithmic Execution,,OTHER,INTRADAY,L2,,Y,MARGIN_REQUIRED,,,,,,NOT_STARTED,,,,HFT,Colocation
+L-003,Scalping Algorithms,STRATEGY,OUT-OF-SCOPE,L,Algorithmic Execution,,OTHER,INTRADAY,TICK,,Y,MARGIN_REQUIRED,,,,,,NOT_STARTED,,,,Scalping,Cost sensitivity too high for small accounts
+L-004,VWAP Execution,EXECUTION,CORE,L,Algorithmic Execution,US_STOCKS;SPOT_CRYPTO,,,OHLCV_INTRADAY,,,,,,,,,,,,E-VWAP; B-VWAP Reversion,VWAP algo,
+L-005,TWAP Execution,EXECUTION,CORE,L,Algorithmic Execution,US_STOCKS;SPOT_CRYPTO,,,OHLCV_INTRADAY,,,,,,,,,,,,,TWAP,
+L-006,POV Execution,EXECUTION,OUT-OF-SCOPE,L,Algorithmic Execution,,,,TICK,,,,,,,,,,,,,Percent of volume,Irrelevant at small size
+L-007,Smart Order Routing,EXECUTION,OUT-OF-SCOPE,L,Algorithmic Execution,,,,L2,,,,,,,,,,,,,SOR,Broker-side
+L-008,Iceberg Execution,EXECUTION,OUT-OF-SCOPE,L,Algorithmic Execution,,,,L2,,,,,,,,,,,,E-Iceberg Detection,Reserve orders,
+L-009,Liquidity-Seeking Execution,EXECUTION,OUT-OF-SCOPE,L,Algorithmic Execution,,,,L2,,,,,,,,,,,,,Dark-pool seeking,
+L-010,Arrival Price / Implementation Shortfall,EXECUTION,CORE,L,Algorithmic Execution,US_STOCKS;SPOT_CRYPTO,,,OHLCV_INTRADAY,,,,,,,,,,,,,IS; arrival price,Useful as a cost-measurement benchmark
+M-001,Risk Parity,RISK,CORE,M,Portfolio & Risk Management,US_STOCKS;SPOT_CRYPTO,,,OHLCV_DAILY,,,,,,,,,,,,F-Low Vol,Equal risk contribution,
+M-002,Equal Weighting,RISK,CORE,M,Portfolio & Risk Management,US_STOCKS;SPOT_CRYPTO,,,OHLCV_DAILY,,,,,,,,,,,,Phase 21 baseline,1/N,Mandatory baseline for the selection layer
+M-003,Volatility Targeting,RISK,CORE,M,Portfolio & Risk Management,US_STOCKS;SPOT_CRYPTO,,,OHLCV_DAILY,,,,,,,,,,,,H-ATR,Vol scaling,
+M-004,Kelly Criterion,RISK,CORE,M,Portfolio & Risk Management,US_STOCKS;SPOT_CRYPTO,,,OHLCV_DAILY,,,,,,,,,,,,M-Risk of Ruin,Fractional Kelly,
+M-005,Fixed Fractional Sizing,RISK,CORE,M,Portfolio & Risk Management,US_STOCKS;SPOT_CRYPTO,,,OHLCV_DAILY,,,,,,,,,,,,M-Max Risk per Trade,Percent risk,
+M-006,Dynamic Position Sizing,RISK,CORE,M,Portfolio & Risk Management,US_STOCKS;SPOT_CRYPTO,,,OHLCV_DAILY,,,,,,,,,,,,,Confidence-scaled sizing,
+M-007,Trailing Stop,RISK,CORE,M,Portfolio & Risk Management,US_STOCKS;SPOT_CRYPTO,,,OHLCV_DAILY,,,,,,,,,,,,A-PSAR,Chandelier; ATR trail,
+M-008,Scale In (Pyramiding),RISK,CORE,M,Portfolio & Risk Management,US_STOCKS;SPOT_CRYPTO,,,OHLCV_DAILY,,,,,,,,,,,,A-Turtle,Pyramiding,
+M-009,Scale Out,RISK,CORE,M,Portfolio & Risk Management,US_STOCKS;SPOT_CRYPTO,,,OHLCV_DAILY,,,,,,,,,,,,,Partial profits,
+M-010,Portfolio Rebalancing,RISK,CORE,M,Portfolio & Risk Management,US_STOCKS;SPOT_CRYPTO,,,OHLCV_DAILY,,,,,,,,,,,,,Calendar / threshold,
+M-011,Drawdown Control,RISK,CORE,M,Portfolio & Risk Management,US_STOCKS;SPOT_CRYPTO,,,OHLCV_DAILY,,,,,,,,,,,,,DD-based de-risking,
+M-012,Correlation-Based Allocation,RISK,CORE,M,Portfolio & Risk Management,US_STOCKS;SPOT_CRYPTO,,,OHLCV_DAILY,,,,,,,,,,,,F-Clustering,HRP; correlation caps,
+M-013,Maximum Risk per Trade,RISK,CORE,M,Portfolio & Risk Management,US_STOCKS;SPOT_CRYPTO,,,OHLCV_DAILY,,,,,,,,,,,,M-Fixed Fractional,Per-trade risk cap,
+M-014,Portfolio Exposure Limits,RISK,CORE,M,Portfolio & Risk Management,US_STOCKS;SPOT_CRYPTO,,,OHLCV_DAILY,,,,,,,,,,,,,Gross/net/sector caps,
+M-015,Risk of Ruin,RISK,CORE,M,Portfolio & Risk Management,US_STOCKS;SPOT_CRYPTO,,,OHLCV_DAILY,,,,,,,,,,,,F-Monte Carlo,Ruin probability,Metric
+N-001,Auction Market Theory,FRAMEWORK,CORE,N,Other Frameworks,US_STOCKS;SPOT_CRYPTO,,,OHLCV_INTRADAY,,,,,,,,,,,,N-Market Profile,AMT,
+N-002,Market Profile (TPO),FRAMEWORK,CORE,N,Other Frameworks,US_STOCKS;SPOT_CRYPTO,,,OHLCV_INTRADAY,,,,,,,,,,,,E-Volume Profile,TPO charts,"Time-based, distinct from volume profile"
+N-003,Wyckoff Method,FRAMEWORK,CORE,N,Other Frameworks,US_STOCKS;SPOT_CRYPTO,,,OHLCV_DAILY,,,,,,,,,,,,E-VSA; D-Power of Three,Wyckoff phases,
+N-004,Elliott Wave Theory,FRAMEWORK,CORE,N,Other Frameworks,US_STOCKS;SPOT_CRYPTO,,,OHLCV_DAILY,,,,,,,,,,,,,EWT,Very high ambiguity
+N-005,Harmonic Patterns,FRAMEWORK,CORE,N,Other Frameworks,US_STOCKS;SPOT_CRYPTO,,,OHLCV_DAILY,,,,,,,,,,,,C-Fib,Gartley; Bat; Butterfly,
+N-006,Gann Methods,FRAMEWORK,CORE,N,Other Frameworks,US_STOCKS;SPOT_CRYPTO,,,OHLCV_DAILY,,,,,,,,,,,,,Gann angles/square of 9,
+N-007,Ichimoku Cloud,STRATEGY,CORE,N,Other Frameworks,US_STOCKS;SPOT_CRYPTO,TREND,SWING,OHLCV_DAILY,,Y,MARGIN_REQUIRED,,,,,,NOT_STARTED,,,A-MA Crossover,Ichimoku Kinko Hyo,Deterministic rules exist
+N-008,Renko Charts,FEATURE,CORE,N,Other Frameworks,US_STOCKS;SPOT_CRYPTO,,,OHLCV_INTRADAY,,,,,,,,,,,,,Renko-based trading,Chart transform; strategies use brick reversals
+N-009,Heikin-Ashi,FEATURE,CORE,N,Other Frameworks,US_STOCKS;SPOT_CRYPTO,,,OHLCV_DAILY,,,,,,,,,,,,,HA candles,Not tradable prices: fills must use real OHLC
+N-010,Point and Figure,FEATURE,CORE,N,Other Frameworks,US_STOCKS;SPOT_CRYPTO,,,OHLCV_DAILY,,,,,,,,,,,,,P&F,
+N-011,Fractals,FEATURE,CORE,N,Other Frameworks,US_STOCKS;SPOT_CRYPTO,,,OHLCV_DAILY,,,,,,,,,,,,C-Swing Points,Williams fractals,2-bar confirmation lag
+N-012,Adaptive Trading Systems,FRAMEWORK,CORE,N,Other Frameworks,US_STOCKS;SPOT_CRYPTO,,,OHLCV_DAILY,,,,,,,,,,,,B-Adaptive MR,KAMA; adaptive parameters,
+N-013,Multi-Timeframe Analysis,FILTER,CORE,N,Other Frameworks,US_STOCKS;SPOT_CRYPTO,,,OHLCV_INTRADAY,,,,,,,,,,,,D-Daily Bias,MTF,Classic source of look-ahead bugs (unclosed HTF bars)
+N-014,Hybrid Multi-Strategy Systems,FRAMEWORK,CORE,N,Other Frameworks,US_STOCKS;SPOT_CRYPTO,,,OHLCV_DAILY,,,,,,,,,,,,Phase 21,Strategy ensembles,Design target of Phase 21

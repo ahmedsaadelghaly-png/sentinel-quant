@@ -1,0 +1,32 @@
+# secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# python
+__pycache__/
+*.py[cod]
+.venv/
+*.egg-info/
+build/
+dist/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# data and run artifacts (versioned separately, never in git)
+data/
+runs/
+logs/
+*.parquet
+*.duckdb
+*.sqlite
+
+# editors / OS
+.vscode/
+.idea/
+.DS_Store

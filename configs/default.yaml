@@ -1,0 +1,37 @@
+# Sentinel Quant — default configuration (no secrets here; use SQ_* env vars)
+mode: sim                    # sim | paper | live  (live requires live_trading_approved: true)
+live_trading_approved: false
+
+exchange:
+  name: binance
+  testnet: true
+  symbols: ["BTC/USDT", "ETH/USDT"]
+  timeframe: 1h
+
+daily_controls:
+  risk_per_trade_pct: 0.5      # % of equity lost if the stop is hit
+  max_daily_loss_pct: 2.0      # hard daily stop, includes open-position stops
+  max_daily_trades: 10
+  max_open_positions: 3
+  max_total_exposure_pct: 50
+  max_consecutive_losses: 4
+  daily_profit_lock_pct: 3.0   # stopping rule, never a target to chase
+  trading_window_utc: ["00:00", "23:59"]
+  reset_time_utc: "00:00"
+
+alerts:
+  telegram_enabled: false
+  daily_report_utc: "00:05"
+
+binary:                        # Track B — separate instrument, disabled by default
+  enabled: false
+  max_stake_per_contract: 25
+  max_daily_exposure: 150
+  max_daily_loss: 50
+  max_consecutive_losses: 3
+  max_simultaneous_contracts: 2
+  min_payout_pct: 80
+  allowed_expiries: ["15m", "1h"]
+  martingale_allowed: false
+
+data_dir: data
