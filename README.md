@@ -5,12 +5,12 @@ Research-first automated trading for spot crypto and US stocks, with a separate 
 **Principle:** prove the edge before risking capital. The bot trades automatically within user-defined daily risk limits, starts on simulation/testnet, and only reaches real money after strategies pass every validation gate and the user explicitly approves.
 
 ## Status
-MVP-2 (crypto market data) — see `docs/PROGRESS.md`.
+MVP-8 code complete: an automated paper bot with a local control panel. Nothing here has proven an edge, and live trading is not available. See `docs/PROGRESS.md`.
 
 ## Quick start
 ```bash
-uv venv && source .venv/bin/activate
-uv pip install -e ".[dev]"
+uv sync --locked --extra dev
+source .venv/bin/activate
 cp .env.example .env            # fill in testnet keys later; never commit .env
 sentinel-quant check-config     # validates configs/default.yaml
 pytest
@@ -25,6 +25,16 @@ sentinel-quant data download --full          # re-fetch the range to detect rest
 sentinel-quant data report                   # verify checksums, print the quality report
 sentinel-quant data report --strict          # also fail on gaps and zero-volume bars
 ```
+
+## Backtest, bot and control panel
+```bash
+sentinel-quant backtest                      # run the configured strategy; logged in the registry
+sentinel-quant run                           # start the bot in the configured mode (sim or paper)
+sentinel-quant gui                           # control panel at http://127.0.0.1:8765
+sentinel-quant kill-switch on                # refuse every order (also: off, status)
+sentinel-quant report 2026-11-05             # daily report for a UTC date
+```
+See `docs/runbooks/operating.md`.
 
 ## Key documents
 - `MASTER_PLAN.md` — architecture, milestones, gates, daily risk controls

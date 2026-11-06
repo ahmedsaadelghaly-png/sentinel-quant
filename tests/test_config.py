@@ -6,6 +6,7 @@ from pydantic import ValidationError
 from sentinel_quant.cli import main
 from sentinel_quant.config import (
     AppConfig,
+    BacktestConfig,
     BinaryControls,
     ConfigError,
     DailyControls,
@@ -98,3 +99,11 @@ def test_data_defaults_are_loaded() -> None:
 def test_unsupported_timeframe_is_rejected(timeframe: str) -> None:
     with pytest.raises(ValidationError, match="timeframe"):
         ExchangeConfig(timeframe=timeframe)
+
+
+def test_backtest_costs_cannot_be_zero() -> None:
+    assert load_config(ROOT / "configs/default.yaml").backtest.taker_fee_bps == 10
+    with pytest.raises(ValidationError):
+        BacktestConfig(taker_fee_bps=0)
+    with pytest.raises(ValidationError):
+        BacktestConfig(slippage_bps=0)

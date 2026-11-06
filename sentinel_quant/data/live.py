@@ -23,7 +23,7 @@ class Candle:
     volume: float
 
 
-def _to_candle(symbol: str, timeframe: str, row: OhlcvRow) -> Candle | None:
+def to_candle(symbol: str, timeframe: str, row: OhlcvRow) -> Candle | None:
     """Convert a raw row, or return None if it is unusable as a trading input."""
     values = row[1:6]
     if any(v is None for v in values):
@@ -68,6 +68,11 @@ class ClosedCandlePoller:
         self._log = get_logger()
         self._wait_seconds = retry_seconds
 
+    @property
+    def wait_seconds(self) -> float:
+        """How long to wait before the next poll is worthwhile."""
+        return self._wait_seconds
+
     def poll_once(self) -> list[Candle]:
         """Return newly closed bars. One failing symbol never costs another its bars."""
         now_ms = self._client.server_time_ms()
@@ -111,7 +116,7 @@ class ClosedCandlePoller:
                     symbol=symbol,
                     missing_bars=(open_time - last) // self._tf_ms - 1,
                 )
-            candle = _to_candle(symbol, self._timeframe, closed[open_time])
+            candle = to_candle(symbol, self._timeframe, closed[open_time])
             if candle is None:
                 self._log.warning("live_bad_bar", symbol=symbol, open_time_ms=open_time)
             else:

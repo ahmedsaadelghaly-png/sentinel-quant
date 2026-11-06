@@ -21,7 +21,7 @@ Read `MASTER_PLAN.md` (current milestone) and `docs/PROGRESS.md` before doing an
 
 ## Commands
 ```bash
-uv venv && uv pip install -e ".[dev]"
+uv sync --locked --extra dev
 sentinel-quant check-config --config configs/default.yaml
 ruff check . && ruff format --check . && mypy sentinel_quant && pytest
 ```

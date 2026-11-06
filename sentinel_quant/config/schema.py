@@ -8,7 +8,7 @@ from __future__ import annotations
 
 from datetime import date, time
 from enum import StrEnum
-from typing import Self
+from typing import Literal, Self
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
@@ -89,6 +89,28 @@ class DataConfig(_Strict):
     poll_retry_seconds: float = Field(10.0, gt=0, le=300)
 
 
+class BacktestConfig(_Strict):
+    """Cost assumptions for simulated fills. Zero costs are refused on purpose.
+
+    Defaults are deliberately pessimistic: the standard Binance spot taker fee with
+    no discount, plus an assumed allowance for spread and market impact.
+    """
+
+    initial_cash: float = Field(10_000.0, gt=0)
+    taker_fee_bps: float = Field(10.0, gt=0, le=100)
+    slippage_bps: float = Field(5.0, gt=0, le=100)
+
+
+class StrategyConfig(_Strict):
+    """Placeholder strategy parameters: textbook values, deliberately not tuned."""
+
+    name: Literal["donchian_breakout"] = "donchian_breakout"
+    entry_lookback: int = Field(55, ge=2, le=1000)
+    exit_lookback: int = Field(20, ge=2, le=1000)
+    atr_period: int = Field(14, ge=2, le=1000)
+    atr_stop_multiple: float = Field(2.0, gt=0, le=20)
+
+
 class AlertsConfig(_Strict):
     telegram_enabled: bool = False
     daily_report_utc: time = time(0, 5)
@@ -121,10 +143,14 @@ class AppConfig(_Strict):
     live_trading_approved: bool = False
     exchange: ExchangeConfig = ExchangeConfig()
     data: DataConfig = DataConfig()
+    backtest: BacktestConfig = BacktestConfig()
+    strategy: StrategyConfig = StrategyConfig()
     daily_controls: DailyControls = DailyControls()
     alerts: AlertsConfig = AlertsConfig()
     binary: BinaryControls = BinaryControls()
     data_dir: str = "data"
+    runs_dir: str = "runs"
+    kill_switch_path: str = "runs/KILL_SWITCH"
 
     @model_validator(mode="after")
     def _live_guard(self) -> Self:

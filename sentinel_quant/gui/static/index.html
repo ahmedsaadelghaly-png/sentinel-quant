@@ -1,0 +1,373 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sentinel Quant</title>
+<style>
+:root {
+  color-scheme: light;
+  --bg: #f4f4f1; --surface: #fcfcfb; --line: #e3e2dd;
+  --text: #0b0b0b; --muted: #52514e;
+  --series: #2a78d6;
+  --good: #1f7a4d; --warn: #9a6400; --bad: #c0302f;
+  --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root { color-scheme: dark;
+    --bg: #111110; --surface: #1a1a19; --line: #2e2e2b;
+    --text: #f0efec; --muted: #c3c2b7;
+    --series: #3987e5;
+    --good: #4cc38a; --warn: #e0a93a; --bad: #f07070; }
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--text);
+  font: 14px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+header { display: flex; flex-wrap: wrap; gap: 12px; align-items: center;
+  padding: 12px 20px; background: var(--surface); border-bottom: 1px solid var(--line); }
+h1 { font-size: 16px; margin: 0; letter-spacing: .02em; }
+h2 { font-size: 13px; margin: 0 0 10px; color: var(--muted); font-weight: 600; }
+.spacer { flex: 1; }
+.badge { font: 600 12px var(--mono); padding: 3px 8px; border: 1px solid var(--line); border-radius: 4px; }
+button { font: inherit; padding: 6px 12px; border-radius: 4px; border: 1px solid var(--line);
+  background: var(--surface); color: var(--text); cursor: pointer; }
+button:hover:not(:disabled) { border-color: var(--muted); }
+button:focus-visible, input:focus-visible { outline: 2px solid var(--series); outline-offset: 1px; }
+button:disabled { opacity: .5; cursor: not-allowed; }
+button.danger { background: var(--bad); border-color: var(--bad); color: #fff; font-weight: 600; }
+main { display: grid; gap: 14px; padding: 14px 20px 32px; max-width: 1280px; margin: 0 auto;
+  grid-template-columns: minmax(0, 2fr) minmax(280px, 1fr); }
+section { background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 14px; min-width: 0; }
+.wide { grid-column: 1 / -1; }
+.notice { grid-column: 1 / -1; padding: 10px 14px; border-radius: 6px; border: 1px solid var(--line);
+  background: var(--surface); color: var(--muted); }
+.notice.alert { border-color: var(--bad); color: var(--text); }
+.tiles { display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
+.tile .label { color: var(--muted); font-size: 12px; }
+.tile .value { font: 600 22px var(--mono); margin-top: 2px; overflow-wrap: anywhere; }
+.tile .sub { color: var(--muted); font-size: 12px; }
+.up { color: var(--good); } .down { color: var(--bad); }
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+th { text-align: left; color: var(--muted); font-weight: 500; padding: 4px 8px 6px 0; border-bottom: 1px solid var(--line); }
+td { padding: 5px 8px 5px 0; border-bottom: 1px solid var(--line); vertical-align: top; }
+td.num, th.num { text-align: right; font-family: var(--mono); }
+.scroll { overflow: auto; max-height: 340px; }
+.empty { color: var(--muted); padding: 18px 0; }
+.meter { margin-bottom: 11px; }
+.meter .row { display: flex; justify-content: space-between; gap: 8px; font-size: 13px; }
+.meter .row span:last-child { font-family: var(--mono); color: var(--muted); }
+.bar { height: 6px; background: var(--line); border-radius: 3px; margin-top: 4px; overflow: hidden; }
+.bar i { display: block; height: 100%; background: var(--series); border-radius: 3px; }
+.bar i.hot { background: var(--bad); }
+form.limits { display: grid; gap: 8px; grid-template-columns: 1fr 96px; align-items: center; margin-top: 8px; }
+form.limits label { font-size: 13px; }
+form.limits input { width: 100%; font: 13px var(--mono); padding: 4px 6px; background: var(--bg);
+  color: var(--text); border: 1px solid var(--line); border-radius: 4px; text-align: right; }
+form.limits .full { grid-column: 1 / -1; }
+.hint { color: var(--muted); font-size: 12px; }
+#chart { position: relative; }
+#chart svg { display: block; width: 100%; height: 240px; }
+#tip { position: absolute; pointer-events: none; display: none; background: var(--bg); border: 1px solid var(--line);
+  padding: 4px 8px; border-radius: 4px; font: 12px var(--mono); white-space: nowrap; }
+#message { min-height: 18px; font-size: 13px; }
+@media (max-width: 800px) { main { grid-template-columns: minmax(0, 1fr); padding: 12px 16px 24px; } }
+</style>
+</head>
+<body>
+<header>
+  <h1>Sentinel Quant</h1>
+  <span class="badge" id="mode">…</span>
+  <span class="badge" id="service">…</span>
+  <span class="hint" id="meta"></span>
+  <span class="spacer"></span>
+  <button id="startStop" disabled>…</button>
+  <button id="kill" class="danger" disabled>Kill switch</button>
+</header>
+<main>
+  <div class="notice alert" id="killNotice" hidden></div>
+  <div class="notice">Placeholder strategy: it exercises the automated loop and has passed no validation gate. Simulated or testnet money only. Live trading is not available.</div>
+
+  <section class="wide"><div class="tiles" id="tiles"></div></section>
+
+  <section>
+    <h2>Equity</h2>
+    <div id="chart"><div id="tip"></div><svg id="svg" role="img" aria-label="Equity over time"></svg></div>
+    <p class="empty" id="chartEmpty" hidden>No equity recorded yet. The first point appears when the service processes a closed bar.</p>
+  </section>
+
+  <section>
+    <h2>Daily risk usage</h2>
+    <div id="meters"></div>
+    <p class="hint" id="halt"></p>
+  </section>
+
+  <section>
+    <h2>Open positions</h2>
+    <div class="scroll"><table id="positions"></table></div>
+  </section>
+
+  <section>
+    <h2>Daily risk controls</h2>
+    <p class="hint">Stricter values apply within 30 seconds. Looser values wait for the next daily reset.</p>
+    <form class="limits" id="limits"></form>
+    <p id="message" role="status"></p>
+  </section>
+
+  <section class="wide">
+    <h2>Decision log</h2>
+    <div class="scroll"><table id="decisions"></table></div>
+  </section>
+</main>
+<script>
+"use strict";
+const $ = id => document.getElementById(id);
+const LIMITS = [
+  ["risk_per_trade_pct", "Risk per trade %", "0.01"],
+  ["max_daily_loss_pct", "Max daily loss %", "0.01"],
+  ["max_daily_trades", "Max entries per day", "1"],
+  ["max_open_positions", "Max open positions", "1"],
+  ["max_total_exposure_pct", "Max exposure %", "1"],
+  ["max_consecutive_losses", "Max consecutive losses", "1"],
+  ["daily_profit_lock_pct", "Profit lock % (stops entries)", "0.01"],
+];
+let current = null, limitsReady = false, formDirty = false;
+
+const money = v => v == null ? "–" : v.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+const signed = v => v == null ? "–" : (v >= 0 ? "+" : "") + money(v);
+const qty = v => v == null ? "–" : Number(v).toFixed(6);
+const stamp = ms => new Date(ms).toISOString().slice(0, 16).replace("T", " ");
+
+function el(tag, text, cls) {
+  const node = document.createElement(tag);
+  if (text != null) node.textContent = text;   // textContent only: log text is never HTML
+  if (cls) node.className = cls;
+  return node;
+}
+
+async function api(path, body) {
+  const options = body === undefined ? {} : {
+    method: "POST",
+    headers: {"Content-Type": "application/json", "X-Sentinel-Control": "1"},
+    body: JSON.stringify(body),
+  };
+  const response = await fetch(path, options);
+  const data = await response.json().catch(() => ({}));
+  if (!response.ok) throw new Error(typeof data.detail === "string" ? data.detail : "request failed");
+  return data;
+}
+
+function tile(label, value, sub, cls) {
+  const box = el("div", null, "tile");
+  box.append(el("div", label, "label"), el("div", value, "value " + (cls || "")));
+  if (sub) box.append(el("div", sub, "sub"));
+  return box;
+}
+
+function renderTiles(s) {
+  const pct = s.day_pnl != null && s.day_start_equity ? 100 * s.day_pnl / s.day_start_equity : null;
+  const tone = s.day_pnl == null || s.day_pnl === 0 ? "" : s.day_pnl > 0 ? "up" : "down";
+  $("tiles").replaceChildren(
+    tile("Equity", money(s.equity), s.equity == null ? "no data yet" : "quote currency"),
+    tile("Today's P&L", signed(s.day_pnl), pct == null ? "since daily reset" : `${pct >= 0 ? "+" : ""}${pct.toFixed(2)}%`, tone),
+    tile("Cash", money(s.cash)),
+    tile("Open positions", String(s.positions.length), `of ${s.limits.max_open_positions}`),
+    tile("Entries today", String(s.risk ? s.risk.entries_today : 0), `of ${s.limits.max_daily_trades}`),
+  );
+}
+
+function meter(label, used, limit, text) {
+  const box = el("div", null, "meter");
+  const row = el("div", null, "row");
+  row.append(el("span", label), el("span", text));
+  const share = limit > 0 ? Math.min(used / limit, 1) : 0;
+  const track = el("div", null, "bar");
+  const fill = el("i", null, share >= 0.8 ? "hot" : "");
+  fill.style.width = (share * 100) + "%";
+  track.append(fill); box.append(row, track);
+  return box;
+}
+
+function renderRisk(s) {
+  const L = s.limits, r = s.risk;
+  const lossPct = s.day_pnl != null && s.day_pnl < 0 ? -100 * s.day_pnl / s.day_start_equity : 0;
+  const exposurePct = s.equity ? 100 * (s.exposure || 0) / s.equity : 0;
+  const entries = r ? r.entries_today : 0, losses = r ? r.consecutive_losses : 0;
+  $("meters").replaceChildren(
+    meter("Daily loss", lossPct, L.max_daily_loss_pct, `${lossPct.toFixed(2)}% of ${L.max_daily_loss_pct}%`),
+    meter("Entries", entries, L.max_daily_trades, `${entries} of ${L.max_daily_trades}`),
+    meter("Consecutive losses", losses, L.max_consecutive_losses, `${losses} of ${L.max_consecutive_losses}`),
+    meter("Positions", s.positions.length, L.max_open_positions, `${s.positions.length} of ${L.max_open_positions}`),
+    meter("Exposure", exposurePct, L.max_total_exposure_pct, `${exposurePct.toFixed(1)}% of ${L.max_total_exposure_pct}%`),
+  );
+  const pending = r && r.next_limits ? " Looser limits are queued for the next reset." : "";
+  $("halt").textContent = (r && r.halt ? `⛔ New entries stopped for today: ${r.halt.replaceAll("_", " ")}.` : "No limit hit today.") + pending;
+}
+
+function renderPositions(s) {
+  const table = $("positions");
+  if (!s.positions.length) { table.replaceChildren(row("td", ["No open positions."])); return; }
+  table.replaceChildren(
+    row("th", ["Symbol", "Quantity", "Mark", "Stop", "Value", "Unrealised"], 1),
+    ...s.positions.map(p => row("td", [p.symbol, qty(p.quantity), money(p.mark), money(p.stop), money(p.value), signed(p.unrealised)], 1)),
+  );
+}
+
+function row(cell, values, numericFrom) {
+  const tr = el("tr");
+  values.forEach((v, i) => tr.append(el(cell, v, numericFrom != null && i >= numericFrom ? "num" : "")));
+  return tr;
+}
+
+function renderDecisions(rows) {
+  const table = $("decisions");
+  if (!rows.length) {
+    table.replaceChildren(row("td", ["No decisions yet. Quiet periods are normal: the bot only acts on a signal."]));
+    return;
+  }
+  table.replaceChildren(row("th", ["Time (UTC)", "Symbol", "Decision", "Why"]),
+    ...rows.map(d => row("td", [stamp(d.time_ms), d.symbol, d.kind.replaceAll("_", " "), d.detail])));
+}
+
+function renderChart(points) {
+  const svg = $("svg"), tip = $("tip");
+  const empty = points.length < 2;
+  $("chartEmpty").hidden = !empty; svg.style.display = empty ? "none" : "block";
+  if (empty) return;
+  const W = svg.clientWidth || 800, H = 240, left = 68, right = 12, top = 10, bottom = 24;
+  svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
+  const xs = points.map(p => p.time_ms), ys = points.map(p => p.equity);
+  const x0 = xs[0], x1 = xs[xs.length - 1];
+  let y0 = Math.min(...ys), y1 = Math.max(...ys);
+  const pad = (y1 - y0) * 0.1 || Math.abs(y1) * 0.001 || 1; y0 -= pad; y1 += pad;
+  const X = t => left + (t - x0) / (x1 - x0 || 1) * (W - left - right);
+  const Y = v => top + (y1 - v) / (y1 - y0) * (H - top - bottom);
+  const css = getComputedStyle(document.documentElement);
+  const line = css.getPropertyValue("--line"), muted = css.getPropertyValue("--muted"), series = css.getPropertyValue("--series");
+  const NS = "http://www.w3.org/2000/svg";
+  const make = (name, attrs, text) => {
+    const n = document.createElementNS(NS, name);
+    for (const [k, v] of Object.entries(attrs)) n.setAttribute(k, v);
+    if (text != null) n.textContent = text;
+    return n;
+  };
+  const parts = [];
+  for (let i = 0; i <= 4; i++) {
+    const v = y0 + (y1 - y0) * i / 4, y = Y(v);
+    parts.push(make("line", {x1: left, x2: W - right, y1: y, y2: y, stroke: line, "stroke-width": 1}));
+    parts.push(make("text", {x: left - 8, y: y + 4, "text-anchor": "end", fill: muted, "font-size": 11}, Math.round(v).toLocaleString()));
+  }
+  const ticks = Math.max(2, Math.min(6, Math.floor(W / 150)));
+  for (let i = 0; i < ticks; i++) {
+    const t = x0 + (x1 - x0) * i / (ticks - 1);
+    const anchor = i === 0 ? "start" : i === ticks - 1 ? "end" : "middle";
+    parts.push(make("text", {x: X(t), y: H - 6, "text-anchor": anchor, fill: muted, "font-size": 11}, stamp(t).slice(5, 10)));
+  }
+  const d = points.map((p, i) => `${i ? "L" : "M"}${X(p.time_ms).toFixed(1)} ${Y(p.equity).toFixed(1)}`).join("");
+  parts.push(make("path", {d, fill: "none", stroke: series, "stroke-width": 2, "stroke-linejoin": "round", "stroke-linecap": "round"}));
+  const cross = make("line", {y1: top, y2: H - bottom, stroke: muted, "stroke-width": 1, visibility: "hidden"});
+  const dot = make("circle", {r: 4, fill: series, stroke: css.getPropertyValue("--surface"), "stroke-width": 2, visibility: "hidden"});
+  parts.push(cross, dot);
+  svg.replaceChildren(...parts);
+  svg.onmousemove = event => {
+    const box = svg.getBoundingClientRect();
+    const t = x0 + (event.clientX - box.left - left) / (W - left - right) * (x1 - x0);
+    let best = points[0];
+    for (const p of points) if (Math.abs(p.time_ms - t) < Math.abs(best.time_ms - t)) best = p;
+    const x = X(best.time_ms), y = Y(best.equity);
+    cross.setAttribute("x1", x); cross.setAttribute("x2", x); cross.setAttribute("visibility", "visible");
+    dot.setAttribute("cx", x); dot.setAttribute("cy", y); dot.setAttribute("visibility", "visible");
+    tip.textContent = `${stamp(best.time_ms)}  ${money(best.equity)}`;
+    tip.style.display = "block";
+    tip.style.left = Math.max(0, Math.min(x + 10, W - tip.offsetWidth)) + "px";
+    tip.style.top = Math.max(0, y - 34) + "px";
+  };
+  svg.onmouseleave = () => {
+    tip.style.display = "none"; cross.setAttribute("visibility", "hidden"); dot.setAttribute("visibility", "hidden");
+  };
+}
+
+function buildLimits(s) {
+  const form = $("limits");
+  const nodes = [];
+  for (const [name, label, step] of LIMITS) {
+    const id = "limit_" + name;
+    const lab = el("label", label); lab.htmlFor = id;
+    const input = el("input"); input.id = id; input.name = name; input.type = "number"; input.step = step; input.min = "0";
+    input.value = s.limits[name] ?? "";
+    input.oninput = () => { formDirty = true; };
+    nodes.push(lab, input);
+  }
+  const save = el("button", "Save limits", "full"); save.type = "submit";
+  nodes.push(save);
+  form.replaceChildren(...nodes);
+  form.onsubmit = async event => {
+    event.preventDefault();
+    const body = {...current.limits};
+    for (const [name] of LIMITS) {
+      const raw = form.elements[name].value;
+      body[name] = raw === "" ? null : Number(raw);
+    }
+    try {
+      await api("/api/limits", body);
+      formDirty = false;
+      say("Saved. Stricter values apply within 30 seconds; looser values at the next reset.");
+    } catch (error) { say(error.message); }
+  };
+  limitsReady = true;
+}
+
+function say(text) { $("message").textContent = text; }
+
+function renderHeader(s) {
+  $("mode").textContent = s.mode.toUpperCase();
+  $("service").textContent = s.running ? "● RUNNING" : "○ STOPPED";
+  $("meta").textContent = `${s.exchange} · ${s.symbols.join(", ")} · ${s.timeframe} · ${s.strategy}`;
+  const toggle = $("startStop");
+  toggle.disabled = false; toggle.textContent = s.running ? "Stop service" : "Start service";
+  const kill = $("kill");
+  kill.disabled = false; kill.textContent = s.kill_switch.engaged ? "Release kill switch" : "Kill switch";
+  const notice = $("killNotice");
+  notice.hidden = !s.kill_switch.engaged;
+  notice.textContent = s.kill_switch.engaged ? `⛔ Kill switch engaged: every order is refused. ${s.kill_switch.reason}` : "";
+}
+
+async function refresh() {
+  try {
+    const [s, decisions, equity] = await Promise.all([api("/api/status"), api("/api/decisions"), api("/api/equity")]);
+    current = s;
+    renderHeader(s); renderTiles(s); renderRisk(s); renderPositions(s);
+    renderDecisions(decisions); renderChart(equity);
+    if (!limitsReady) buildLimits(s);
+    else if (!formDirty) for (const [name] of LIMITS) $("limits").elements[name].value = s.limits[name] ?? "";
+  } catch (error) { $("service").textContent = "⚠ PANEL DISCONNECTED"; }
+}
+
+$("kill").onclick = async () => {
+  try {
+    if (current.kill_switch.engaged) {
+      const typed = prompt("Trading can resume after this. Type RELEASE to confirm.");
+      if (typed === null) return;
+      await api("/api/kill-switch", {action: "release", confirm: typed});
+    } else {
+      if (!confirm("Engage the kill switch? Every order is refused, exits included.")) return;
+      await api("/api/kill-switch", {action: "engage"});
+    }
+  } catch (error) { say(error.message); }
+  refresh();
+};
+
+$("startStop").onclick = async () => {
+  const running = current.running;
+  if (!confirm(running ? "Stop the trading service?" : `Start the service in ${current.mode} mode?`)) return;
+  try {
+    await api(running ? "/api/service/stop" : "/api/service/start", {});
+    say(running ? "Stopping…" : "Starting…");
+  } catch (error) { say(error.message); }
+  setTimeout(refresh, 1500);
+};
+
+refresh();
+setInterval(refresh, 5000);
+</script>
+</body>
+</html>

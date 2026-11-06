@@ -17,6 +17,18 @@ data:                          # public mainnet market data, no credentials need
   close_grace_seconds: 2       # a bar counts as closed this long after its close time
   poll_retry_seconds: 10       # live poller re-check interval when a bar is late
 
+backtest:                      # zero costs are refused
+  initial_cash: 10000
+  taker_fee_bps: 10            # Binance standard spot taker fee, no discount
+  slippage_bps: 5              # assumed spread + impact per side
+
+strategy:                      # placeholder to exercise the loop, not a profit claim
+  name: donchian_breakout
+  entry_lookback: 55           # textbook values, deliberately not tuned
+  exit_lookback: 20
+  atr_period: 14
+  atr_stop_multiple: 2
+
 daily_controls:
   risk_per_trade_pct: 0.5      # % of equity lost if the stop is hit
   max_daily_loss_pct: 2.0      # hard daily stop, includes open-position stops
@@ -44,3 +56,5 @@ binary:                        # Track B — separate instrument, disabled by de
   martingale_allowed: false
 
 data_dir: data
+runs_dir: runs
+kill_switch_path: runs/KILL_SWITCH   # if this file exists, every order is refused
