@@ -11,7 +11,7 @@ Or run `sentinel-quant run` directly. Only one service can run per mode.
 
 ## Modes
 - `sim` (default): simulated fills on real mainnet candles. No keys.
-- `paper`: Binance spot testnet. Set `mode: paper`, plus `SQ_EXCHANGE_API_KEY` and `SQ_EXCHANGE_API_SECRET` in `.env`, using **testnet keys only**. Not yet run against the real testnet.
+- `paper`: Binance spot testnet. Set `mode: paper`, plus `SQ_EXCHANGE_API_KEY` and `SQ_EXCHANGE_API_SECRET` in `.env`, using **testnet keys only**. The adapter has passed a manual order cycle on the real testnet; the full service has not yet run in paper mode.
 
 ## Emergency stop
 ```bash
