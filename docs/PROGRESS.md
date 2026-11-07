@@ -61,6 +61,8 @@
 - First real run, base run 3, development data only: **placeholder fails G2, G4, G5 and G6**. Net -1,250, 2 of 5 walk-forward windows positive, 2 of 6 neighbours positive, deflated Sharpe 0.004. G3 not run.
 - Runs 1 and 2 saw the full history, so the holdout is not clean for the placeholder. New strategies start clean.
 
+**Thresholds approved by the user on 2026-11-07** (ADRs 0007, 0008). They stay fixed: changing one needs a new ADR, before any strategy is tested against it.
+
 ### Next
 1. Keep the paper service running, fix what the real exchange exposes, and complete the 2+ week unattended run (MVP exit).
 2. Research Phase 2 and BO-0, in separate sessions, to choose strategies worth testing.

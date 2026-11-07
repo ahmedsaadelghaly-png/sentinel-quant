@@ -1,6 +1,6 @@
 # ADR 0008 — Automated validation protocol
 
-- Status: accepted, thresholds subject to the user's review
+- Status: accepted, thresholds approved by the user on 2026-11-07
 - Date: 2026-11-06
 
 ## Context
