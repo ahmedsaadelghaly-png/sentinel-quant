@@ -1,0 +1,65 @@
+# Sentinel Quant — default configuration (no secrets here; use SQ_* env vars)
+mode: paper                  # Binance spot testnet only; see docs/runbooks/operating.md
+live_trading_approved: false
+
+exchange:
+  name: binance
+  testnet: true
+  symbols: ["BTC/USDT", "ETH/USDT"]
+  timeframe: 1h
+
+data:                          # public mainnet market data, no credentials needed
+  history_start: "2021-01-01"  # first bar requested by `data download`
+  page_limit: 1000             # bars per request
+  max_retries: 5               # per request, exponential backoff
+  backoff_base_seconds: 1
+  backoff_max_seconds: 60
+  close_grace_seconds: 2       # a bar counts as closed this long after its close time
+  poll_retry_seconds: 10       # live poller re-check interval when a bar is late
+
+backtest:                      # zero costs are refused
+  initial_cash: 10000
+  taker_fee_bps: 10            # Binance standard spot taker fee, no discount
+  slippage_bps: 5              # assumed spread + impact per side
+
+strategy:                      # placeholder to exercise the loop, not a profit claim
+  name: donchian_breakout
+  entry_lookback: 55           # textbook values, deliberately not tuned
+  exit_lookback: 20
+  atr_period: 14
+  atr_stop_multiple: 2
+
+validation:                    # pass thresholds are fixed in code (ADR 0008)
+  holdout_start: "2025-07-01"  # G3: later bars stay unseen unless explicitly opened
+  train_days: 730              # G4 walk-forward windows
+  test_days: 180
+
+daily_controls:
+  risk_per_trade_pct: 0.5      # % of equity lost if the stop is hit
+  max_daily_loss_pct: 2.0      # hard daily stop, includes open-position stops
+  max_daily_trades: 10
+  max_open_positions: 3
+  max_total_exposure_pct: 50
+  max_consecutive_losses: 4
+  daily_profit_lock_pct: 3.0   # stopping rule, never a target to chase
+  trading_window_utc: ["00:00", "23:59"]
+  reset_time_utc: "00:00"
+
+alerts:
+  telegram_enabled: false
+  daily_report_utc: "00:05"
+
+binary:                        # Track B — separate instrument, disabled by default
+  enabled: false
+  max_stake_per_contract: 25
+  max_daily_exposure: 150
+  max_daily_loss: 50
+  max_consecutive_losses: 3
+  max_simultaneous_contracts: 2
+  min_payout_pct: 80
+  allowed_expiries: ["15m", "1h"]
+  martingale_allowed: false
+
+data_dir: data
+runs_dir: runs/paper          # own ledger, reports and logs: nothing shared with sim
+kill_switch_path: runs/KILL_SWITCH   # if this file exists, every order is refused

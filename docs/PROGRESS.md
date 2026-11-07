@@ -39,7 +39,8 @@
 - Loop: closed bar, signal, risk, order, fill, ledger, reconciliation. SQLite ledger with intent written first. Deterministic order ids. A difference between ledger and venue engages the kill switch. Live mode refuses to start.
 - Sim daemon matches the backtester exactly. Crashes injected at 20 points end identically to an uninterrupted run. ADR 0005.
 - **Testnet adapter (2026-11-07):** a manual smoke run on the real Binance spot testnet passed: market buy with resting stop, idempotent resend, fill recognised after restart, clean reject of a too-small order, exit cancelling the stop. The run called the adapter directly, so it did not go through the risk engine.
-- **Not verified:** the full service in paper mode, a stop actually triggering on the exchange, and real fee handling (testnet charged 0). The 2+ week unattended run (MVP exit) has not happened.
+- **Paper service (2026-11-07):** started with `configs/paper.yaml` beside sim and processed its first closed bar with no errors. It has placed no orders yet.
+- **Not verified:** signal to risk engine to exchange in one live path, a stop actually triggering on the exchange, and real fee handling (testnet charged 0). The 2+ week unattended run (MVP exit) has not happened.
 
 ### MVP-7 — Alerts and daily report ✅ code, Telegram not exercised (2026-11-06)
 - Telegram Bot API notifier (real delivery untested: needs a bot token), log fallback, daily report with P&L, risk usage, trades, and why each was taken or refused.
@@ -61,7 +62,7 @@
 - Runs 1 and 2 saw the full history, so the holdout is not clean for the placeholder. New strategies start clean.
 
 ### Next
-1. Run the full service in paper mode, fix what the real exchange exposes, then the 2+ week unattended run (MVP exit).
+1. Keep the paper service running, fix what the real exchange exposes, and complete the 2+ week unattended run (MVP exit).
 2. Research Phase 2 and BO-0, in separate sessions, to choose strategies worth testing.
 3. M1 expansion (second exchange, stocks) and M5 baselines with the full §6 protocol.
 
