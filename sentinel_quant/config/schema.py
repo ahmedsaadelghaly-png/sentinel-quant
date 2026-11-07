@@ -111,6 +111,14 @@ class StrategyConfig(_Strict):
     atr_stop_multiple: float = Field(2.0, gt=0, le=20)
 
 
+class ValidationConfig(_Strict):
+    """Windows for the §6 protocol. Pass thresholds are code constants, not settings."""
+
+    holdout_start: date = date(2025, 7, 1)  # G3: bars from here on stay unseen by default
+    train_days: int = Field(730, ge=30)
+    test_days: int = Field(180, ge=7)
+
+
 class AlertsConfig(_Strict):
     telegram_enabled: bool = False
     daily_report_utc: time = time(0, 5)
@@ -145,6 +153,7 @@ class AppConfig(_Strict):
     data: DataConfig = DataConfig()
     backtest: BacktestConfig = BacktestConfig()
     strategy: StrategyConfig = StrategyConfig()
+    validation: ValidationConfig = ValidationConfig()
     daily_controls: DailyControls = DailyControls()
     alerts: AlertsConfig = AlertsConfig()
     binary: BinaryControls = BinaryControls()

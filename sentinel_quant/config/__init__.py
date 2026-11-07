@@ -10,6 +10,7 @@ from sentinel_quant.config.schema import (
     ExchangeConfig,
     StrategyConfig,
     TradingMode,
+    ValidationConfig,
 )
 from sentinel_quant.config.secrets import Secrets
 
@@ -24,5 +25,6 @@ __all__ = [
     "Secrets",
     "StrategyConfig",
     "TradingMode",
+    "ValidationConfig",
     "load_config",
 ]

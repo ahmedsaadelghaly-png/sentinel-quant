@@ -5,7 +5,7 @@ Research-first automated trading for spot crypto and US stocks, with a separate 
 **Principle:** prove the edge before risking capital. The bot trades automatically within user-defined daily risk limits, starts on simulation/testnet, and only reaches real money after strategies pass every validation gate and the user explicitly approves.
 
 ## Status
-MVP-8 code complete: an automated paper bot with a local control panel. Nothing here has proven an edge, and live trading is not available. See `docs/PROGRESS.md`.
+MVP-8 and the M3 statistics are code complete: an automated paper bot with a local control panel. Nothing here has proven an edge, and live trading is not available. See `docs/PROGRESS.md`.
 
 ## Quick start
 ```bash
@@ -29,6 +29,8 @@ sentinel-quant data report --strict          # also fail on gaps and zero-volume
 ## Backtest, bot and control panel
 ```bash
 sentinel-quant backtest                      # run the configured strategy; logged in the registry
+sentinel-quant validate                      # gates G2 to G6; the holdout stays unseen
+sentinel-quant evaluate 1                    # statistical report and G6 verdict for a registry run
 sentinel-quant run                           # start the bot in the configured mode (sim or paper)
 sentinel-quant gui                           # control panel at http://127.0.0.1:8765
 sentinel-quant kill-switch on                # refuse every order (also: off, status)

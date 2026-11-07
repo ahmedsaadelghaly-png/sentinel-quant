@@ -28,5 +28,10 @@ Start again. The service restores its risk state, re-sends unfinished orders und
 ## Where things are
 `runs/ledger-<mode>.sqlite` (orders, fills, decisions), `runs/reports/` (daily reports), `runs/logs/`, `runs/registry.sqlite` (backtests). To start a fresh simulation, stop the service and delete `runs/ledger-sim.sqlite`.
 
+## Validating a strategy
+`sentinel-quant validate` runs gates G2 to G6 on data before `validation.holdout_start`. It runs many variants, and each one counts as a trial.
+
+`validate --open-holdout` spends the holdout for G3. Do this once, and only for a strategy you have finished changing: any later run on that data is no longer out of sample, and the report will say so.
+
 ## Telegram alerts
 Set `alerts.telegram_enabled: true`, plus `SQ_TELEGRAM_BOT_TOKEN` and `SQ_TELEGRAM_CHAT_ID`.

@@ -14,7 +14,6 @@ import uvicorn
 from pydantic import ValidationError
 
 from sentinel_quant import __version__
-from sentinel_quant.backtest.engine import run_backtest
 from sentinel_quant.backtest.feed import load_candles
 from sentinel_quant.backtest.models import CostModel
 from sentinel_quant.config import AppConfig, ConfigError, Secrets, load_config
@@ -24,6 +23,13 @@ from sentinel_quant.data.live import Candle
 from sentinel_quant.data.quality import QualityReport, check_ohlcv, render_text
 from sentinel_quant.data.store import DatasetError, DatasetKey, DatasetStore
 from sentinel_quant.evaluation.metrics import summarize
+from sentinel_quant.evaluation.report import EvaluationError, evaluate_run
+from sentinel_quant.evaluation.validation import (
+    record_run,
+    run_strategy,
+    split_holdout,
+    validate_strategy,
+)
 from sentinel_quant.execution.adapter import ExecutionError
 from sentinel_quant.execution.loop import stop_file_watcher
 from sentinel_quant.execution.service import build_service, ledger_path, pid_path, stop_path
@@ -34,10 +40,7 @@ from sentinel_quant.ops.logging import configure_logging, get_logger
 from sentinel_quant.ops.pidfile import acquire_pid, release_pid, running_pid
 from sentinel_quant.ops.report import build_daily_report, write_report
 from sentinel_quant.registry.store import Registry
-from sentinel_quant.risk.engine import RiskEngine
 from sentinel_quant.risk.kill_switch import KillSwitch
-from sentinel_quant.strategies.base import SizedStrategy
-from sentinel_quant.strategies.donchian import DonchianBreakout
 
 
 def _check_config(path: str) -> int:
@@ -174,6 +177,38 @@ def _backtest_run(args: argparse.Namespace) -> int:
     cfg = _load_for_data(args.config)
     if cfg is None:
         return 1
+    loaded = _load_history(cfg)
+    if loaded is None:
+        return 1
+    candles, dataset_ids = loaded
+    holdout_ms = _day_start_ms(cfg.validation.holdout_start)
+    development, _ = split_holdout(candles, holdout_ms)
+    data = candles if args.include_holdout else development
+    costs = CostModel.from_config(cfg.backtest).stressed(args.cost_multiplier)
+    registry = Registry(Path(cfg.runs_dir) / "registry.sqlite")
+    result = run_strategy(cfg, data, costs, cfg.strategy, dataset_ids)
+    summary = summarize(result)
+    run = record_run(
+        registry,
+        cfg,
+        result,
+        cfg.strategy,
+        costs,
+        dataset_ids,
+        scope="full" if args.include_holdout else "development",
+        holdout_used=args.include_holdout,
+    )
+    print(f"run {run.id}: {cfg.strategy.name}, trial {run.trial_number}")
+    print("NOT EVIDENCE OF AN EDGE: in-sample, no validation gate has been passed.")
+    if not args.include_holdout:
+        print(f"Data ends before the holdout, {cfg.validation.holdout_start}.")
+    for name, value in asdict(summary).items():
+        print(f"  {name:<18} {value}")
+    print(f"  {'rejections':<18} {len(result.rejections)}")
+    return 0
+
+
+def _load_history(cfg: AppConfig) -> tuple[dict[str, list[Candle]], list[str]] | None:
     log = get_logger()
     store = DatasetStore(cfg.data_dir)
     candles: dict[str, list[Candle]] = {}
@@ -183,44 +218,55 @@ def _backtest_run(args: argparse.Namespace) -> int:
             manifest = store.latest(DatasetKey(cfg.exchange.name, symbol, cfg.exchange.timeframe))
             if manifest is None:
                 log.error("dataset_missing", symbol=symbol)
-                return 1
+                return None
             candles[symbol] = load_candles(store, manifest.dataset_id)[1]
             dataset_ids.append(manifest.dataset_id)
     except DatasetError as exc:
         log.error("dataset_invalid", error=str(exc))
-        return 1
+        return None
+    return candles, dataset_ids
 
-    costs = CostModel.from_config(cfg.backtest).stressed(args.cost_multiplier)
-    # The same risk engine as live use, with a private switch: the operator's real kill
-    # switch must not silently turn a research run into a run with no trades.
-    risk = RiskEngine(cfg.daily_controls, KillSwitch(f"{cfg.kill_switch_path}.backtest"))
-    strategy = DonchianBreakout(cfg.strategy)
-    result = run_backtest(
-        candles,
-        SizedStrategy(strategy, risk),
-        risk,
-        costs,
-        cfg.backtest.initial_cash,
-        dataset_ids,
-    )
-    summary = summarize(result)
+
+def _validate(args: argparse.Namespace) -> int:
+    cfg = _load_for_data(args.config)
+    if cfg is None:
+        return 1
+    loaded = _load_history(cfg)
+    if loaded is None:
+        return 1
+    candles, dataset_ids = loaded
     registry = Registry(Path(cfg.runs_dir) / "registry.sqlite")
-    run = registry.record(
-        strategy.metadata.id,
+    report = validate_strategy(
+        cfg,
+        candles,
         dataset_ids,
-        {
-            "strategy": cfg.strategy.model_dump(),
-            "daily_controls": cfg.daily_controls.model_dump(),
-            "costs": {"fee_bps": costs.fee_bps, "slippage_bps": costs.slippage_bps},
-            "initial_cash": cfg.backtest.initial_cash,
-        },
-        asdict(summary),
+        registry,
+        _day_start_ms(cfg.validation.holdout_start),
+        open_holdout=args.open_holdout,
     )
-    print(f"run {run.id}: {strategy.metadata.id}, trial {run.trial_number}")
-    print("NOT EVIDENCE OF AN EDGE: in-sample, no validation gate has been passed.")
-    for name, value in asdict(summary).items():
-        print(f"  {name:<18} {value}")
-    print(f"  {'rejections':<18} {len(result.rejections)}")
+    path = Path(cfg.runs_dir) / "reports" / f"validation-{report.base_run_id}.md"
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(report.text, encoding="utf-8")
+    print(report.text)
+    print(f"written to {path}")
+    return 0
+
+
+def _evaluate(args: argparse.Namespace) -> int:
+    cfg = _load_for_data(args.config)
+    if cfg is None:
+        return 1
+    registry = Registry(Path(cfg.runs_dir) / "registry.sqlite")
+    try:
+        report = evaluate_run(registry, args.run)
+    except EvaluationError as exc:
+        get_logger().error("evaluation_failed", error=str(exc))
+        return 1
+    path = Path(cfg.runs_dir) / "reports" / f"run-{args.run}.md"
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(report.text, encoding="utf-8")
+    print(report.text)
+    print(f"written to {path}")
     return 0
 
 
@@ -339,6 +385,9 @@ def main(argv: list[str] | None = None) -> int:
     backtest = sub.add_parser("backtest", help="run the configured strategy on stored data")
     backtest.add_argument("--config", default="configs/default.yaml")
     backtest.add_argument(
+        "--include-holdout", action="store_true", help="also use the holdout (recorded)"
+    )
+    backtest.add_argument(
         "--cost-multiplier", type=float, default=1.0, help="scale costs, e.g. 2 for the G5 stress"
     )
     run = sub.add_parser("run", help="start the trading service (sim or paper, never live)")
@@ -346,6 +395,14 @@ def main(argv: list[str] | None = None) -> int:
     daily = sub.add_parser("report", help="build the daily report for a UTC date")
     daily.add_argument("date", type=date.fromisoformat)
     daily.add_argument("--config", default="configs/default.yaml")
+    validate = sub.add_parser("validate", help="run gates G2 to G6 for the configured strategy")
+    validate.add_argument("--config", default="configs/default.yaml")
+    validate.add_argument(
+        "--open-holdout", action="store_true", help="G3: spend the holdout (recorded, one use)"
+    )
+    evaluate = sub.add_parser("evaluate", help="statistical report for a registry run")
+    evaluate.add_argument("run", type=int)
+    evaluate.add_argument("--config", default="configs/default.yaml")
     gui = sub.add_parser("gui", help="open the local control panel (127.0.0.1 only)")
     gui.add_argument("--config", default="configs/default.yaml")
     gui.add_argument("--port", type=int, default=8765)
@@ -356,6 +413,10 @@ def main(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
     if args.command == "check-config":
         return _check_config(args.config)
+    if args.command == "validate":
+        return _validate(args)
+    if args.command == "evaluate":
+        return _evaluate(args)
     if args.command == "gui":
         return _gui(args)
     if args.command == "run":

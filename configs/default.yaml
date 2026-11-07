@@ -29,6 +29,11 @@ strategy:                      # placeholder to exercise the loop, not a profit 
   atr_period: 14
   atr_stop_multiple: 2
 
+validation:                    # pass thresholds are fixed in code (ADR 0008)
+  holdout_start: "2025-07-01"  # G3: later bars stay unseen unless explicitly opened
+  train_days: 730              # G4 walk-forward windows
+  test_days: 180
+
 daily_controls:
   risk_per_trade_pct: 0.5      # % of equity lost if the stop is hit
   max_daily_loss_pct: 2.0      # hard daily stop, includes open-position stops

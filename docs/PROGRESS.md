@@ -47,10 +47,22 @@
 - FastAPI on 127.0.0.1: Command Center and Daily Risk Controls, real ledger state only. ADR 0006.
 - Checked against a real server: controls exercised over HTTP, rendered in headless Firefox at desktop and phone widths. Button clicks and chart hover were not driven in a browser. Built from the written plan: the reference design is not in the repo.
 
+### M3 — Evaluation ✅ (2026-11-06)
+- Deflated and probabilistic Sharpe (reproduces the published worked example), PBO by CSCV, stationary block bootstrap, CAGR, Sortino, Calmar, tail metrics. Vectorized screener agrees with the event-driven engine on golden tests.
+- `sentinel-quant evaluate <run>` builds the report from the registry. G6 thresholds are code constants: deflated Sharpe at least 0.95, PBO at most 0.25 (ADR 0007).
+- First real report, run 1 in `runs/registry.sqlite`: Donchian placeholder **fails G6**, deflated Sharpe 0.074, Sharpe -0.32 (95% interval -1.14 to 0.46). Run 2 at double costs: -59.2%, drawdown 64.8%. PBO not assessed: only two trials.
+- The MVP-5 run above was logged in a scratch registry that no longer exists. Run 1 repeats it with the same parameters and data, and the figures match.
+- Still open from the plan: partial fills and volume limits in the backtester. Borrow fees do not apply to long-only spot.
+
+### Validation protocol, gates G2 to G6 ✅ (2026-11-06)
+- `sentinel-quant validate`: enforced holdout (bars from 2025-07-01 hidden unless opened, every opening recorded), walk-forward with parameters chosen on past data only, robustness across neighbouring parameters, double costs and calendar years. Every variant is logged as a trial. ADR 0008.
+- First real run, base run 3, development data only: **placeholder fails G2, G4, G5 and G6**. Net -1,250, 2 of 5 walk-forward windows positive, 2 of 6 neighbours positive, deflated Sharpe 0.004. G3 not run.
+- Runs 1 and 2 saw the full history, so the holdout is not clean for the placeholder. New strategies start clean.
+
 ### Next
 1. Get testnet keys, run in paper mode, fix what the real exchange exposes, then the 2+ week unattended run (MVP exit).
-2. Full M3 before any strategy evaluation: deflated Sharpe, PBO, bootstrap CIs, thresholds fixed in advance (G6).
-3. Research Phase 2 and BO-0, in separate sessions.
+2. Research Phase 2 and BO-0, in separate sessions, to choose strategies worth testing.
+3. M1 expansion (second exchange, stocks) and M5 baselines with the full §6 protocol.
 
 ## Research
 - Phase 0–1 done (see `docs/research/trading_strategies/PROGRESS.md`). Next: Phase 2 (evidence base) and BO-0 (binary platform due diligence), in separate sessions.

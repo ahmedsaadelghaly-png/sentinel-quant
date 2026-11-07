@@ -14,6 +14,8 @@ from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
+import polars as pl
+
 import sentinel_quant
 
 _SCHEMA = """
@@ -71,6 +73,7 @@ class Registry:
         config: Mapping[str, Any],
         metrics: Mapping[str, Any],
         seed: int | None = None,
+        equity: Sequence[tuple[int, float]] = (),
     ) -> RunRecord:
         created_at = datetime.now(tz=UTC).isoformat()
         with self._connect() as connection:
@@ -91,7 +94,25 @@ class Registry:
             )
             run_id = cursor.lastrowid
         assert run_id is not None
+        if equity:
+            self._equity_path(run_id).parent.mkdir(parents=True, exist_ok=True)
+            frame = pl.DataFrame(
+                {"time_ms": [t for t, _ in equity], "equity": [e for _, e in equity]},
+                schema={"time_ms": pl.Int64, "equity": pl.Float64},
+            )
+            frame.write_parquet(self._equity_path(run_id))
         return next(r for r in self.runs(strategy_id) if r.id == run_id)
+
+    def _equity_path(self, run_id: int) -> Path:
+        return self.path.parent / "equity" / f"run-{run_id}.parquet"
+
+    def equity(self, run_id: int) -> list[tuple[int, float]]:
+        """The run's equity curve, empty for a run recorded without one."""
+        path = self._equity_path(run_id)
+        if not path.is_file():
+            return []
+        frame = pl.read_parquet(path)
+        return list(zip(frame["time_ms"].to_list(), frame["equity"].to_list(), strict=True))
 
     def trials(self, strategy_id: str) -> int:
         with self._connect() as connection:
